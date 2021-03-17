@@ -97,17 +97,31 @@ app.get("/login", function(req, res){
 app.get("/register", function(req, res){
   res.render("register");
 });
-var arr[];
+
 // db.clients.find(funtion(err, foundClient){
 //   arr.pushback(foundClient)
 // })
 
 
+const arr2= [];
+
+
 //sending clientList as array
 app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
+    
     if(req.user.privilege==="admin"){
-      res.render("partner", {name: req.user.firstname});
+      User.find({privilege: "emp"}, function(err,foundUser){
+        if(err){
+          throw err;
+        }
+        else{
+        for (var i=0; i<foundUser.length;i++){
+          arr2.push(foundUser[i].username);
+          console.log(foundUser[i].username);
+        }}
+      });
+      res.render("partner", {name: req.user.firstname, arr2: arr2});
     }
     else{
       res.render("employee", {name:req.user.firstname});
@@ -232,6 +246,20 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
+
+
+
+app.get("/register-client", function(req, res){
+  
+    res.render("register-client");
+});
+
+
+
+
+
+
+
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
