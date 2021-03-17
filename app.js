@@ -1,4 +1,5 @@
 require('dotenv').config()
+var $ = require('jquery')
 const express= require("express");
 const bodyParser=require("body-parser");
 const mongoose = require("mongoose");
@@ -53,7 +54,21 @@ userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
 
+const clientSchema = new mongoose.Schema({
+  companyName: String,
+  ownerName: String,
+  phoneNumber: String,
+  email: String,
+  password: String,
+  address: String,
+  city: String,
+  state: String,
+  pinCode: Number,
+  gst: String
 
+});
+
+const client = new mongoose.model("client", clientSchema);
 
 passport.use(User.createStrategy());
 
@@ -72,7 +87,7 @@ app.get("/", function(req, res){
 
 app.get("/login", function(req, res){
   if(req.isAuthenticated()){
-    res.redirect("/" + req.user.id);
+    res.redirect("/users/" + req.user.id);
   }
   else{
   res.render("login");
@@ -82,12 +97,14 @@ app.get("/login", function(req, res){
 app.get("/register", function(req, res){
   res.render("register");
 });
+var arr[];
+// db.clients.find(funtion(err, foundClient){
+//   arr.pushback(foundClient)
+// })
 
 
-
-
-
-app.get("/:name", function(req, res){
+//sending clientList as array
+app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
     if(req.user.privilege==="admin"){
       res.render("partner", {name: req.user.firstname});
@@ -119,11 +136,11 @@ app.post("/login", function(req,res){
         passport.authenticate("local")(req, res, function(){
           User.findById(req.user.id,function(err, foundUser){
             if(foundUser.privilege== "admin"){
-              res.redirect("/" + req.user.id);
+              res.redirect("/users/" + req.user.id);
             }
             else{
               if(foundUser.privilege=== "emp"){
-                res.redirect("/" + req.user.id);
+                res.redirect("/users/" + req.user.id);
               }
               else{
                 res.send("User privilege not found. Please contact admin.");
@@ -194,6 +211,27 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 
 
 });
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
+
+})
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
