@@ -1,4 +1,5 @@
 require('dotenv').config()
+var $ = require('jquery')
 const express= require("express");
 const bodyParser=require("body-parser");
 const mongoose = require("mongoose");
@@ -9,8 +10,8 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const app=express();
 
 // const encrypt = require("mongoose-encryption");
-// const secret = "thisisasecretwritteninplainenglish";
 
+var arr=[];
 
 app.use(express.static("public"));
 mongoose.set('useFindAndModify', false);
@@ -43,17 +44,42 @@ const userSchema = new mongoose.Schema({
 
 
 });
+//mongoose schema for taskAssigned
+const taskSchema = new mongoose.Schema({
+  partner: String,
+  clientName: String,
+  employeeAssigned: String,
+  deadline: String,
+  date: String,
+  task: String,
+  remarks: String,
+  status: String
+});
 
+const task = new mongoose.model("Task", taskSchema);
 
 //use middleware passport-local-mongoose (npm module)
-
 userSchema.plugin(passportLocalMongoose);
 
 
 
 const User = new mongoose.model("User", userSchema);
 
+const clientSchema = new mongoose.Schema({
+  companyName: String,
+  ownerName: String,
+  phoneNumber: String,
+  email: String,
+  password: String,
+  address: String,
+  city: String,
+  state: String,
+  pinCode: Number,
+  gst: String
 
+});
+
+const client = new mongoose.model("client", clientSchema);
 
 passport.use(User.createStrategy());
 
@@ -62,7 +88,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get("/", function(req, res){
   if(req.isAuthenticated()){
-    res.redirect("/" + req.user.id)
+    res.redirect("/users/" + req.user.id)
   }
   else{
     res.render("home");
@@ -70,9 +96,11 @@ app.get("/", function(req, res){
   }
 });
 
+
+
 app.get("/login", function(req, res){
   if(req.isAuthenticated()){
-    res.redirect("/" + req.user.id);
+    res.redirect("/users/" + req.user.id);
   }
   else{
   res.render("login");
@@ -84,13 +112,25 @@ app.get("/register", function(req, res){
 });
 
 
-
-
-
-app.get("/:name", function(req, res){
+//sending clientList as array
+app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
+
     if(req.user.privilege==="admin"){
-      res.render("partner", {name: req.user.firstname});
+      client.find({}, function(err,foundUser){
+        if(err){
+          throw err;
+        }
+        else{
+        for (var i=0; i<foundUser.length;i++){
+          arr.push(foundUser[i].companyName);
+
+
+        }}
+        res.render("partner", {name: req.user.firstname, arr: foundUser});
+      });
+      console.log(arr[0]);
+
     }
     else{
       res.render("employee", {name:req.user.firstname});
@@ -99,12 +139,51 @@ app.get("/:name", function(req, res){
 })
 
 
+//client portal
+app.get("/clients/:name", function(req,res){
+  if(req.isAuthenticated()){
+
+    if(req.user.privilege==="admin"){
+      var companyId = req.params.name;
+      console.log(companyId);
+      client.findById(companyId,function(err,results){
+        User.find({privilege: "emp"}, function(req, foundEmployee){
+          res.render("clientAdmin", {company: results, empList:foundEmployee});
+        })
+
+      });
+
+    }
+    else{
+      res.render("clientEmp");
+    }
+  }
+})
+
+//logout route
+app.get("/logout", function(req, res){
+  req.logout();
+  res.redirect("/");
+});
+
+
+
+app.get("/secrets", function(req, res){
+  if(req.isAuthenticated()){
+    res.render("secrets");
+  } else{
+    res.redirect("/login");
+  }
+});
+
+//register a new client
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+
 //Login route
 app.post("/login", function(req,res){
-
-
-
-
 
     const user = new User({
       username: req.body.username,
@@ -119,11 +198,11 @@ app.post("/login", function(req,res){
         passport.authenticate("local")(req, res, function(){
           User.findById(req.user.id,function(err, foundUser){
             if(foundUser.privilege== "admin"){
-              res.redirect("/" + req.user.id);
+              res.redirect("/users/" + req.user.id);
             }
             else{
               if(foundUser.privilege=== "emp"){
-                res.redirect("/" + req.user.id);
+                res.redirect("/users/" + req.user.id);
               }
               else{
                 res.send("User privilege not found. Please contact admin.");
@@ -142,18 +221,7 @@ app.post("/login", function(req,res){
 
 });
 
-app.get("/logout", function(req, res){
-  req.logout();
-  res.redirect("/");
-});
 
-app.get("/secrets", function(req, res){
-  if(req.isAuthenticated()){
-    res.render("secrets");
-  } else{
-    res.redirect("/login");
-  }
-});
 
 app.post("/register-lvl2", function(req,res){
   User.findById(req.user.id, function(err, foundUser){
@@ -194,6 +262,24 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 
 
 });
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
+
+})
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form method="post" action="/register-client">
+            <h1>Form: </h1>
+            
+            <p>Company Name: <input type="text" name="companyName" id="companyName" required placeholder="Enter your Company name"> </p>
+
+            <p>Owner's Name: <input type="text" name="ownerName" id="ownerName" required placeholder="Enter your Company name"> </p>
+
+            <p>Contact Number: <input type="number" name="phoneNumber" id="mob. no." placeholder="XXXXX XXXXX" required> </p>
+
+            <p>Email: <input type="email" name="e-mail" id="email" placeholder="abcd05@gmail.com" required> </p>
+
+            <p>State:
+                <select name="state" id="state" required>
+                    <option value="">--select your state--</option>
+                    <option value="delhi">DELHI</option>
+                    <option value="west bengal">WEST BENGAL</option>
+                    <option value="bihar">BIHAR</option>
+                    <option value="gujrat">GUJARAT</option>
+                    <option value="jharkhand">JHARKHAND</option>
+                    <option value="karnataka">KARNATAKA</option>
+                </select>
+            </p>
+
+            <p>City:
+                <select name="city" id="city" required>
+                    <option value="">--select your city--</option>
+                    <option value="delhi">DELHI</option>
+                    <option value="kolkata">KOLKATA</option>
+                    <option value="patna">PATNA</option>
+                    <option value="surat">SURAT</option>
+                    <option value="ranchi">RANCHI</option>
+                    <option value="banglore">BANGLORE</option>
+                    <option value="varodra">VARODRA</option>
+                </select>
+            </p>
+
+
+            <P>Address: <textarea name="address" id="address" cols="110" rows="3" placeholder="Enter your address" required></textarea></P>
+
+            <p>Pincode: <input type="number" name="arer_pin" id="area_pin" placeholder="XXXXXX" required> </p>
+            <p>
+                <input type="reset" value="Reset all">
+                <input type="submit" value="Submit">
+            </p>
+        </form>
+       </div>
+</body>
+</html>

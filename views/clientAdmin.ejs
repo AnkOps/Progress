@@ -1,0 +1,42 @@
+<%- include('partials/header') %>
+
+<h1> <%=company.companyName%> </h1>
+
+
+<!-- <h2>Assign Task</h2> -->
+
+
+<!-- <p>Lorem ipsum dolor sit amet</p> -->
+<div class="container">
+        <form method="" action="">
+            <h2>Assign Task</h2>
+
+            <p>Employee Name:
+                <select name="empId" id="state" required>
+                    <option value="">--select employee name--</option>
+                  <%   for(var i=0;i<empList.length;i++){ %>
+
+
+                    <option value="<%=empList[i]._id %>"> <%=empList[i].firstname %> <%= empList[i].lastname %> </option>
+
+                <%  } %>
+                </select>
+            </p>
+
+            <p>Task: <input type="text" name="task" id="task" required placeholder="Enter the task"> </p>
+
+            <p>Set Deadline: <input type="date" name="deadline" id="deadline" required placeholder="Enter the deadline"> </p>
+
+
+            <P>Remark: <textarea name="remark" id="remark" cols="110" rows="3" placeholder="Enter remarks"></textarea></P>
+
+            <p>
+                <input type="reset" value="Reset all">
+                <input type="submit" value="Assign">
+            </p>
+        </form>
+       </div>
+
+
+
+<%- include('partials/header') %>
