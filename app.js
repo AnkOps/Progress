@@ -78,7 +78,10 @@ const clientSchema = new mongoose.Schema({
   pinCode: Number,
   gst: String
 
+
 });
+
+
 
 const client = new mongoose.model("client", clientSchema);
 
@@ -118,6 +121,9 @@ app.get("/register", function(req, res){
 
 });
 
+// db.clients.find(funtion(err, foundClient){
+//   arr.pushback(foundClient)
+// })
 
 //sending clientList as array
 app.get("/users/:name", function(req, res){
@@ -137,6 +143,7 @@ app.get("/users/:name", function(req, res){
         res.render("partner", {name: req.user.firstname, arr: foundUser});
       });
       console.log(arr[0]);
+
 
     }
     else{
@@ -171,6 +178,7 @@ app.get("/clients/:name", function(req,res){
 
       });
 
+
     }
     else{
       res.render("clientEmp");
@@ -201,6 +209,7 @@ app.post("/login",
         function(req, res){
           User.findById(req.user.id,function(error, foundUser){
             if(foundUser.privilege=== "admin"){
+
               res.redirect("/users/" + req.user.id);
             }
             else{
