@@ -78,7 +78,10 @@ const clientSchema = new mongoose.Schema({
   pinCode: Number,
   gst: String
 
+
 });
+
+
 
 const client = new mongoose.model("client", clientSchema);
 
@@ -112,6 +115,9 @@ app.get("/register", function(req, res){
   res.render("register");
 });
 
+// db.clients.find(funtion(err, foundClient){
+//   arr.pushback(foundClient)
+// })
 
 //sending clientList as array
 app.get("/users/:name", function(req, res){
@@ -131,6 +137,7 @@ app.get("/users/:name", function(req, res){
         res.render("partner", {name: req.user.firstname, arr: foundUser});
       });
       console.log(arr[0]);
+
 
     }
     else{
@@ -164,6 +171,7 @@ app.get("/clients/:name", function(req,res){
         })
 
       });
+
 
     }
     else{
@@ -201,10 +209,12 @@ app.post("/login",
 
 
 
+
         passport.authenticate("local", { failureRedirect: '/login' }),
         function(req, res){
           User.findById(req.user.id,function(error, foundUser){
             if(foundUser.privilege=== "admin"){
+
               res.redirect("/users/" + req.user.id);
             }
             else{
@@ -299,6 +309,41 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 
 
 });
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
+
+})
+
+
+
+app.get("/register-client", function(req, res){
+  
+    res.render("register-client");
+});
+
+
+
+
+
+
+
 
 app.post("/register-client", function(req,res){
   const addClient = new client({
