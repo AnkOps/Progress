@@ -1,0 +1,180 @@
+#title{
+  background-color: #ff4c68;
+  color: white;
+}
+#myInput {
+  padding: 20px;
+  margin-top: -6px;
+  border: 0;
+  border-radius: 0;
+  background: #f1f1f1;
+}
+ /* Defining a text color/font in body changes it for all the texts unless otherwise specified */
+body{
+  font-family: 'Montserrat-Black', sans-serif;
+}
+
+.col-bullseye{
+  text-align: center;
+}
+.col-check{
+  text-align: center;
+}
+.col-heart{
+  text-align: center;
+}
+
+h1{
+  font-family: 'Montserrat-Black', sans-serif;
+  font-weight: 800;
+  font-size: 3rem;
+  line-height: 1.5;
+}
+.carousel-item{
+  padding: 7% 18%;
+}
+.container-fluid{
+  padding: 3% 15% 7%;
+
+}
+.download-button{
+  margin: 5% 3% 5% 0;
+}
+#features{
+  background-color: white;
+  position: relative;
+  z-index: 1;
+}
+.features-head{
+text-align: center;
+font-weight: 800;
+
+}
+.features-text{
+text-align: center;
+padding: 0 20%;
+color: #8f8f8f;
+font-weight: lighter;
+}
+h2{
+  font-family: 'Montserrat-Black', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1.5;
+}
+.cta-head{
+  font-family: 'Montserrat-Black', sans-serif;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1.5;
+  margin-bottom: 4%;
+}
+.icon{
+  color:#ef8172;
+  margin-bottom: 1rem;
+}
+.icon:hover{
+  color: #ff4c68;
+}
+
+/* title image */
+
+.title-image{
+  width: 60%;
+  transform: rotate(25deg);
+  position: absolute;
+  right: 30%;
+
+}
+
+.navigation-bar{
+
+  padding: 1% 12% 1%;
+}
+
+.navbar{
+  padding-left: 0;
+}
+.nav-item{
+  padding: 0 18px;
+}
+.nav-link{
+  font-size: 1.2rem;
+  font-weight: lighter;
+}
+.navbar-brand{
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 600;
+  font-size: 2.5rem;
+
+}
+.pricing-col{
+  padding: 3% 2%;
+}
+.row{
+  padding: 5% 0;
+}
+.row-features{
+
+  margin: 0 10%;
+}
+
+.login-card{
+  margin-left: 18%
+}
+
+
+/* Testimonial Section */
+#press{
+  background-color: #ef8172;
+  padding-bottom: 3%;
+  text-align: center;
+}
+.press-logo{
+  width: 15%;
+  margin: 20px 20px 50px;
+}
+#pricing{
+  padding: 100px;
+  text-align: center;
+}
+#testimonials{
+
+  text-align: center;
+  background-color: #ef8172;
+  color: white;
+}
+.testimonial-image{
+  width: 10%;
+  border-radius: 100%;
+  margin: 20px;
+}
+
+/* CSS breakpoint to make website responsive. */
+
+@media (max-width: 1028px){
+  .title-image{
+    position: static;
+    transform: rotate(0);
+  }
+  #title{
+    text-align: center;
+  }
+}
+#cta{
+  background-color:  #ff4c68;
+  text-align: center;
+}
+.cta-container{
+  background-color:  #ff4c68;
+
+}
+#footer{
+  text-align: center;
+}
+.footer-links{
+  color: black;
+  text-align: center;
+  text-decoration: none;
+}

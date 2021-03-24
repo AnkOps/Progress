@@ -12,6 +12,7 @@ const date=require(__dirname + "/date.js");
 
 // const encrypt = require("mongoose-encryption");
 
+var arr=[];
 
 
 
@@ -85,7 +86,10 @@ const clientSchema = new mongoose.Schema({
   pinCode: Number,
   gst: String
 
+
 });
+
+
 
 const client = new mongoose.model("client", clientSchema);
 
@@ -120,6 +124,11 @@ app.get("/register", function(req, res){
 });
 
 
+// db.clients.find(funtion(err, foundClient){
+//   arr.pushback(foundClient)
+// })
+
+
 //sending clientList as array
 app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
@@ -139,6 +148,7 @@ app.get("/users/:name", function(req, res){
       });
       console.log(arr[0]);
 
+
     }
     else{
       res.render("employee", {name:req.user.firstname});
@@ -151,15 +161,30 @@ app.get("/users/:name", function(req, res){
 app.get("/clients/:name", function(req,res){
   if(req.isAuthenticated()){
 
+
     if(req.user.privilege==="admin"){
+
       var companyId = req.params.name;
-      console.log(companyId);
+
+
+
       client.findById(companyId,function(err,company){
+
+
         User.find({privilege: "emp"}, function(req, foundEmployee){
-          res.render("clientAdmin", {company: company, empList: foundEmployee});
+            client.findById(companyId, function(req, foundClient){
+
+
+              task.find({clientName: foundClient.companyName}, function(req,foundTask){
+
+                res.render("clientAdmin", {company: company, empList: foundEmployee, taskList:foundTask});
+              })
+            })
+
         })
 
       });
+
 
     }
     else{
@@ -176,13 +201,8 @@ app.get("/logout", function(req, res){
 
 
 
-app.get("/secrets", function(req, res){
-  if(req.isAuthenticated()){
-    res.render("secrets");
-  } else{
-    res.redirect("/login");
-  }
-});
+
+
 
 //register a new client
 app.get("/register-client", function(req,res){
@@ -191,21 +211,26 @@ app.get("/register-client", function(req,res){
 
 
 //Login route
-app.post("/login", function(req,res){
 
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
+app.post("/login",
 
-
-    req.login(user, function(err){
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
 
 
-      if(!err) {
-        passport.authenticate("local")(req, res, function(){
-          User.findById(req.user.id,function(err, foundUser){
-            if(foundUser.privilege== "admin"){
+    // req.login(user, function(err){
+
+
+
+
+
+        passport.authenticate("local", { failureRedirect: '/login' }),
+        function(req, res){
+          User.findById(req.user.id,function(error, foundUser){
+            if(foundUser.privilege=== "admin"){
+
               res.redirect("/users/" + req.user.id);
             }
             else{
@@ -218,24 +243,40 @@ app.post("/login", function(req,res){
             }
 
           });
+        })
 
-      });
-    }
-      else{
-        console.log(err);
-    };
 
-  });
 
-});
+      // });
+
+
+    //   else{
+    //
+    //     console.log(err);
+    //     res.redirect("/logout")
+    //
+    // };
+
+  // });
+
+  var emp="";
+
 
 
 //register task to employees
 app.post("/register-task", function(req,res){
+
+  User.findById(req.body.empId, function(err, foundUser){
+    emp=foundUser.firstname+" "+foundUser.lastname;
+    console.log(emp);
+    console.log(foundUser);
+  });
+console.log(emp);
   const addTask = new task({
     partner: req.user.id,
     clientName: req.body.clientName,
-    employeeAssigned: req.body.empId,
+    employeeAssigned: emp,
+
     deadline: req.body.deadline,
     date: date.getDate(),
     task: req.body.task,
@@ -304,6 +345,40 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
+
+
+
+
+app.get("/register-client", function(req, res){
+  
+    res.render("register-client");
+});
+
+
+
+
+
+
+
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
+
+})
+
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
