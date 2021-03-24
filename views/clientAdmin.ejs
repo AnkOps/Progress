@@ -1,0 +1,95 @@
+<%- include('partials/header') %>
+
+
+
+<div class="jumbotron centered">
+
+
+  <h1> <%= company.companyName %> </h1>
+
+
+  <!-- <h2>Assign Task</h2> -->
+
+
+  <!-- <p>Lorem ipsum dolor sit amet</p> -->
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header"><h3>Assign Task:</h3></div>
+          <div class="card-body">
+        <form method="post" action="/register-task">
+
+          <div class="form-group">
+            <input type="hidden" id="clientName" name="clientName" value="<%= company.companyName %>">
+            <label for="employeeName">Employee Name:</label>
+
+            <select name="empId" class="form-control" id="empId" required>
+              <option value="">--select employee name--</option>
+              <%   for(var i=empList.length-1;i>=0;i--){ %>
+
+
+              <option value=<%= empList[i]._id%>> <%=empList[i].firstname %> <%= empList[i].lastname %> </option>
+
+              <%  } %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task">Task:</label>
+            <input type="text" class="form-control" name="task" id="task" required placeholder="Enter the task">
+          </div>
+          <div class="form-group">
+            <label for="deadline">Set Deadline:</label>
+            <input type="date" class="form-control" name="deadline" id="deadline" required placeholder="Enter the deadline">
+          </div>
+          <div class="form-group">
+            <label for="remark">Remarks:</label>
+
+            <textarea name="remark" class="form-control" id="remark" cols="110" rows="3" placeholder="Enter remarks"></textarea>
+          </div>
+          <div class="form-group">
+            <p>
+              <input class="btn btn-dark" type="reset" value="Reset all">
+              <input class="btn btn-dark" type="submit" value="Assign">
+            </p>
+          </div>
+
+
+        </form>
+      </div>
+      </div>
+      </div>
+<div class="col-md-4">
+
+  </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header"><h1 class="h3 mb-3 font-weight-bold">View Tasks</h1></div>
+          <div class="card-body">
+
+            <%   for(var i=taskList.length-1;i>=0;i--){ %>
+
+
+            <h4>Task: <%= taskList[i].task %></h4>
+            <p>Employee assigned: <%= taskList[i].employeeAssigned %> </p>
+
+            <%  } %>
+          </div>
+          <div class="card-footer"><button type="button" class="btn btn-dark btn-block btn-outline-dark">See all notifications</button></div>
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  <%- include('partials/footer') %>

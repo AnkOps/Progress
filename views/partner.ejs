@@ -17,23 +17,33 @@
 </head>
 <body>
 
-<div class="container">
+
+<div class="jumbotron centred">
+
   <h1>Employee dashboard</h1>
 
 <p>Welcome <%=name %> </p>
 
 <h2>Assign task</h2>
   <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">View Clients
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
-      <li><a href="#">HTML</a></li>
-      <li><a href="#">CSS</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">jQuery</a></li>
-      <li><a href="#">Bootstrap</a></li>
-      <li><a href="#">Angular</a></li>
+
+      <% for(var i=0; i<arr.length; i++ ){ %>
+          <li>
+
+
+            <a href="/clients/<%= arr[i]._id %>" > <%= arr[i].companyName %> </a>
+          </li>
+
+
+
+    <%  } %>
+
+
     </ul>
   </div>
 </div>
@@ -50,47 +60,9 @@ $(document).ready(function(){
 </script>
 
 
+<a href="/register-client"><h2>Register a client</h2></a>
 
 
 
-<h2>View Employee</h2>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-      <input class="form-control" id="myInput" type="text" placeholder="Search..">
+<%- include('partials/footer') %>
 
-      <% for(var i=0; i<arr2.length; i++ ){ %>
-        <li>
-          <a href="#"> <%= arr2[i] %> </a>
-        </li>
-
-
-  <%  } %>
-
-      <li><a href="#">HTML</a></li>
-      <li><a href="#">CSS</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">jQuery</a></li>
-      <li><a href="#">Bootstrap</a></li>
-      <li><a href="#">Angular</a></li>
-    </ul>
-  </div>
-</div>
-
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $(".dropdown-menu li").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>
-
-
-
-
-</body>
-</html>

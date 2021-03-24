@@ -8,10 +8,11 @@ const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const app=express();
+const date=require(__dirname + "/date.js");
 
 // const encrypt = require("mongoose-encryption");
-// const secret = "thisisasecretwritteninplainenglish";
 
+var arr=[];
 
 app.use(express.static("public"));
 mongoose.set('useFindAndModify', false);
@@ -44,10 +45,21 @@ const userSchema = new mongoose.Schema({
 
 
 });
+//mongoose schema for taskAssigned
+const taskSchema = new mongoose.Schema({
+  partner: String,
+  clientName: String,
+  employeeAssigned: String,
+  deadline: String,
+  date: String,
+  task: String,
+  remarks: String,
+  status: String
+});
 
+const task = new mongoose.model("task", taskSchema);
 
 //use middleware passport-local-mongoose (npm module)
-
 userSchema.plugin(passportLocalMongoose);
 
 
@@ -66,7 +78,10 @@ const clientSchema = new mongoose.Schema({
   pinCode: Number,
   gst: String
 
+
 });
+
+
 
 const client = new mongoose.model("client", clientSchema);
 
@@ -77,13 +92,15 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get("/", function(req, res){
   if(req.isAuthenticated()){
-    res.redirect("/" + req.user.id)
+    res.redirect("/users/" + req.user.id)
   }
   else{
     res.render("home");
 
   }
 });
+
+
 
 app.get("/login", function(req, res){
   if(req.isAuthenticated()){
@@ -102,26 +119,26 @@ app.get("/register", function(req, res){
 //   arr.pushback(foundClient)
 // })
 
-
-const arr2= [];
-
-
 //sending clientList as array
 app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
-    
+
     if(req.user.privilege==="admin"){
-      User.find({privilege: "emp"}, function(err,foundUser){
+      client.find({}, function(err,foundUser){
         if(err){
           throw err;
         }
         else{
         for (var i=0; i<foundUser.length;i++){
-          arr2.push(foundUser[i].username);
-          console.log(foundUser[i].username);
+          arr.push(foundUser[i].companyName);
+
+
         }}
+        res.render("partner", {name: req.user.firstname, arr: foundUser});
       });
-      res.render("partner", {name: req.user.firstname, arr2: arr2});
+      console.log(arr[0]);
+
+
     }
     else{
       res.render("employee", {name:req.user.firstname});
@@ -130,26 +147,74 @@ app.get("/users/:name", function(req, res){
 })
 
 
+//client portal
+app.get("/clients/:name", function(req,res){
+  if(req.isAuthenticated()){
+
+    if(req.user.privilege==="admin"){
+
+      var companyId = req.params.name;
+
+
+      client.findById(companyId,function(err,company){
+
+        User.find({privilege: "emp"}, function(req, foundEmployee){
+            client.findById(companyId, function(req, foundClient){
+
+
+              task.find({clientName: foundClient.companyName}, function(req,foundTask){
+
+                res.render("clientAdmin", {company: company, empList: foundEmployee, taskList:foundTask});
+              })
+            })
+
+        })
+
+      });
+
+
+    }
+    else{
+      res.render("clientEmp");
+    }
+  }
+})
+
+//logout route
+app.get("/logout", function(req, res){
+  req.logout();
+  res.redirect("/");
+});
+
+
+
+
+
+//register a new client
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+
 //Login route
-app.post("/login", function(req,res){
+app.post("/login",
+
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
+
+
+    // req.login(user, function(err){
 
 
 
 
+        passport.authenticate("local", { failureRedirect: '/login' }),
+        function(req, res){
+          User.findById(req.user.id,function(error, foundUser){
+            if(foundUser.privilege=== "admin"){
 
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
-
-
-    req.login(user, function(err){
-
-
-      if(!err) {
-        passport.authenticate("local")(req, res, function(){
-          User.findById(req.user.id,function(err, foundUser){
-            if(foundUser.privilege== "admin"){
               res.redirect("/users/" + req.user.id);
             }
             else{
@@ -162,29 +227,48 @@ app.post("/login", function(req,res){
             }
 
           });
+        })
 
-      });
-    }
-      else{
-        console.log(err);
-    };
 
+
+      // });
+
+    //   else{
+    //
+    //     console.log(err);
+    //     res.redirect("/logout")
+    //
+    // };
+
+  // });
+
+  var emp="";
+
+
+
+//register task to employees
+app.post("/register-task", function(req,res){
+
+  User.findById(req.body.empId, function(err, foundUser){
+    emp=foundUser.firstname+" "+foundUser.lastname;
+    console.log(emp);
+    console.log(foundUser);
   });
-
-});
-
-app.get("/logout", function(req, res){
-  req.logout();
-  res.redirect("/");
-});
-
-app.get("/secrets", function(req, res){
-  if(req.isAuthenticated()){
-    res.render("secrets");
-  } else{
-    res.redirect("/login");
-  }
-});
+console.log(emp);
+  const addTask = new task({
+    partner: req.user.id,
+    clientName: req.body.clientName,
+    employeeAssigned: emp,
+    deadline: req.body.deadline,
+    date: date.getDate(),
+    task: req.body.task,
+    remarks: req.body.remarks,
+    status: "Incomplete"
+  })
+  addTask.save(function(){
+    res.render("success");
+  });
+})
 
 app.post("/register-lvl2", function(req,res){
   User.findById(req.user.id, function(err, foundUser){
@@ -260,6 +344,24 @@ app.get("/register-client", function(req, res){
 
 
 
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
+
+})
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
