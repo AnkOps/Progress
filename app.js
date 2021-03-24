@@ -112,13 +112,7 @@ app.get("/login", function(req, res){
 });
 
 app.get("/register", function(req, res){
-  if(req.isAuthenticated()){
-      res.render("register");
-  }
-  else{
-    res.redirect("/login");
-  }
-
+  res.render("register");
 });
 
 // db.clients.find(funtion(err, foundClient){
@@ -198,13 +192,24 @@ app.get("/logout", function(req, res){
 
 //register a new client
 app.get("/register-client", function(req,res){
-
   res.render("register-client");
 })
 
 
 //Login route
 app.post("/login",
+
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
+
+
+    // req.login(user, function(err){
+
+
+
+
         passport.authenticate("local", { failureRedirect: '/login' }),
         function(req, res){
           User.findById(req.user.id,function(error, foundUser){
@@ -226,13 +231,24 @@ app.post("/login",
 
 
 
+      // });
+
+    //   else{
+    //
+    //     console.log(err);
+    //     res.redirect("/logout")
+    //
+    // };
+
+  // });
+
   var emp="";
 
 
 
 //register task to employees
 app.post("/register-task", function(req,res){
-if(req.isAuthenticated()){
+
   User.findById(req.body.empId, function(err, foundUser){
     emp=foundUser.firstname+" "+foundUser.lastname;
     console.log(emp);
@@ -252,37 +268,26 @@ console.log(emp);
   addTask.save(function(){
     res.render("success");
   });
-}
-else{
-  res.redirect("/login");
-}
-
 })
 
 app.post("/register-lvl2", function(req,res){
-  if(req.isAuthenticated()){
-    User.findById(req.user.id, function(err, foundUser){
-      if(err){
-        console.log(err);
-        res.redirect("/login");
+  User.findById(req.user.id, function(err, foundUser){
+    if(err){
+      console.log(err);
+      res.redirect("/login");
 
+    }
+    else{
+      if(foundUser){
+        foundUser.firstname = req.body.firstName;
+        foundUser.lastname = req.body.lastName;
+        foundUser.privilege=req.body.privilege;
+        foundUser.save(function(){
+          res.render("success");
+        })
       }
-      else{
-        if(foundUser){
-          foundUser.firstname = req.body.firstName;
-          foundUser.lastname = req.body.lastName;
-          foundUser.privilege=req.body.privilege;
-          foundUser.save(function(){
-            res.render("success");
-          })
-        }
-      }
-    })
-  }
-  else{
-    res.redirect("/login");
-  }
-
+    }
+  })
 });
 
 
@@ -290,45 +295,71 @@ app.post("/register-lvl2", function(req,res){
 
 
 app.post("/register", function(req,res){
-  if(req.isAuthenticated()){
-    User.register({username: req.body.username }, req.body.password, function(err, user){
-      if(err) {
-        console.log(err);
-        res.redirect("/register");
-      }
-      else{
-        passport.authenticate("local")(req, res, function(){
-          res.render("register-lvl2");
-        });
-      }
-    });
+User.register({username: req.body.username }, req.body.password, function(err, user){
+  if(err) {
+    console.log(err);
+    res.redirect("/register");
   }
   else{
-    res.redirect("/login");
+    passport.authenticate("local")(req, res, function(){
+      res.render("register-lvl2");
+    });
   }
 });
 
+
+});
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
 app.post("/register-client", function(req,res){
-  if(req.isAuthenticated()){
-    const addClient = new client({
-      companyName: req.body.companyName,
-      ownerName: req.body.ownerName,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      address: req.body.address,
-      city: req.body.city,
-      state: req.body.state,
-      pinCode: req.body.pinCode,
-      gst: req.body.gst
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
 
-    });
-    addClient.save();
-    res.render("success");
-  }
-  else{
-    res.redirect("/login");
-  }
+  });
+  addClient.save();
+  res.render("success");
 
+})
+
+
+
+app.get("/register-client", function(req, res){
+
+    res.render("register-client");
+});
+
+
+
+
+
+
+
+
+app.post("/register-client", function(req,res){
+  const addClient = new client({
+    companyName: req.body.companyName,
+    ownerName: req.body.ownerName,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    pinCode: req.body.pinCode,
+    gst: req.body.gst
+
+  });
+  addClient.save();
+  res.render("success");
 
 })
 
