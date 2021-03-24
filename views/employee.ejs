@@ -1,4 +1,80 @@
 <%- include('partials/header') %>
+<link rel="stylesheet" href="styles.css">
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+  /* Style the input field */
+  #myInput {
+    padding: 20px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 0;
+    background: #f1f1f1;
+  }
+
+  /* styling navigation bar */
+#navbar{
+  background-color: black;
+  height: 100px;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
+#navbar ul{
+  display: flex;
+  list-style: none;
+  /* border: 5px solid red; */
+  margin-left: 750px;
+  margin-top: 30px;
+}
+#navbar ul a{
+  text-decoration: none;
+  color: white;
+  margin: 0px 10px;
+  padding: 0px 10px;
+  font-family: 'Stick', sans-serif;
+  font-size: 17px;
+}
+#navbar ul a:hover{
+  background-color: white;
+  color: black;
+  border-radius: 30px;
+}
+
+
+
+
+/* stylling footer */
+footer{
+  height: 50px;
+  /* border: 5px solid rgb(226, 42, 72); */
+  background-color: black;
+  display: flex;
+  align-items: center;
+}
+footer a{
+  color: white;
+  margin: 20px 20px;
+  padding: 5px 10px;
+}
+footer a:hover{
+  background-color: white;
+  color: black;
+  border-radius: 30px;
+}
+
+  </style>
+</head>
+<body>
+
 
 <h1>Employee dashboard</h1>
 
@@ -8,6 +84,10 @@
 
 <p>Lorem ipsum dolor sit amet</p>
 
+<a href="/register-client"><h2>Register a client</h2></a>
+
+<a href="/logout"><h2>Logout</h2></a>
 
 
-<%- include('partials/header') %>
+
+<%- include('partials/footer') %>

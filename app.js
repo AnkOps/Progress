@@ -8,6 +8,7 @@ const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const app=express();
+const date=require(__dirname + "/date.js");
 
 // const encrypt = require("mongoose-encryption");
 
@@ -56,7 +57,7 @@ const taskSchema = new mongoose.Schema({
   status: String
 });
 
-const task = new mongoose.model("Task", taskSchema);
+const task = new mongoose.model("task", taskSchema);
 
 //use middleware passport-local-mongoose (npm module)
 userSchema.plugin(passportLocalMongoose);
@@ -144,11 +145,22 @@ app.get("/clients/:name", function(req,res){
   if(req.isAuthenticated()){
 
     if(req.user.privilege==="admin"){
+
       var companyId = req.params.name;
-      console.log(companyId);
-      client.findById(companyId,function(err,results){
+
+
+      client.findById(companyId,function(err,company){
+
         User.find({privilege: "emp"}, function(req, foundEmployee){
-          res.render("clientAdmin", {company: results, empList:foundEmployee});
+            client.findById(companyId, function(req, foundClient){
+
+
+              task.find({clientName: foundClient.companyName}, function(req,foundTask){
+
+                res.render("clientAdmin", {company: company, empList: foundEmployee, taskList:foundTask});
+              })
+            })
+
         })
 
       });
@@ -168,13 +180,7 @@ app.get("/logout", function(req, res){
 
 
 
-app.get("/secrets", function(req, res){
-  if(req.isAuthenticated()){
-    res.render("secrets");
-  } else{
-    res.redirect("/login");
-  }
-});
+
 
 //register a new client
 app.get("/register-client", function(req,res){
@@ -183,21 +189,22 @@ app.get("/register-client", function(req,res){
 
 
 //Login route
-app.post("/login", function(req,res){
+app.post("/login",
 
-    const user = new User({
-      username: req.body.username,
-      password: req.body.password
-    });
-
-
-    req.login(user, function(err){
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
 
 
-      if(!err) {
-        passport.authenticate("local")(req, res, function(){
-          User.findById(req.user.id,function(err, foundUser){
-            if(foundUser.privilege== "admin"){
+    // req.login(user, function(err){
+
+
+
+        passport.authenticate("local", { failureRedirect: '/login' }),
+        function(req, res){
+          User.findById(req.user.id,function(error, foundUser){
+            if(foundUser.privilege=== "admin"){
               res.redirect("/users/" + req.user.id);
             }
             else{
@@ -210,18 +217,48 @@ app.post("/login", function(req,res){
             }
 
           });
+        })
 
-      });
-    }
-      else{
-        console.log(err);
-    };
 
+
+      // });
+
+    //   else{
+    //
+    //     console.log(err);
+    //     res.redirect("/logout")
+    //
+    // };
+
+  // });
+
+  var emp="";
+
+
+
+//register task to employees
+app.post("/register-task", function(req,res){
+
+  User.findById(req.body.empId, function(err, foundUser){
+    emp=foundUser.firstname+" "+foundUser.lastname;
+    console.log(emp);
+    console.log(foundUser);
   });
-
-});
-
-
+console.log(emp);
+  const addTask = new task({
+    partner: req.user.id,
+    clientName: req.body.clientName,
+    employeeAssigned: emp,
+    deadline: req.body.deadline,
+    date: date.getDate(),
+    task: req.body.task,
+    remarks: req.body.remarks,
+    status: "Incomplete"
+  })
+  addTask.save(function(){
+    res.render("success");
+  });
+})
 
 app.post("/register-lvl2", function(req,res){
   User.findById(req.user.id, function(err, foundUser){
