@@ -1,41 +1,37 @@
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <style>
-  /* Style the input field */
-  #myInput {
-    padding: 20px;
-    margin-top: -6px;
-    border: 0;
-    border-radius: 0;
-    background: #f1f1f1;
-  }
-  </style>
-</head>
-<body>
+<%- include('partials/partnerHeader') %>
 
-<div class="container">
-  <h1>Employee dashboard</h1>
+<div class="jumbotron centred partner-home-container">
+<div class="dashboard"><h1>Partner dashboard</h1></div>
+<div id="partner-home-header">
 
-<p>Welcome <%=name %> </p>
+  <div class="greetings">
+    <h3>Welcome! Mr. <%=name %> </h3>
+    <p>Hope you're doing well? Have a great day at work..</p>
+    <a href="/register-client"><h5>Register a client >></h5></a>
+    <a href="/register"><h5>Register associates >></h5></a>
+  </div>
 
-<h2>Assign task</h2>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+  <div class="dropdown dropdown-container">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Visit Clients
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
-      <li><a href="#">HTML</a></li>
-      <li><a href="#">CSS</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">jQuery</a></li>
-      <li><a href="#">Bootstrap</a></li>
-      <li><a href="#">Angular</a></li>
+  
+      <% for(var i=0; i<arr.length; i++ ){ %>
+          <li>
+  
+            <a href="/clients/<%= arr[i]._id %>" > <%= arr[i].companyName %> </a>
+          </li>
+  
+  
+    <%  } %>
+  
     </ul>
   </div>
+
+</div>
+
+  
 </div>
 
 <script>
@@ -53,44 +49,4 @@ $(document).ready(function(){
 
 
 
-<h2>View Employee</h2>
-  <div class="dropdown">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-      <input class="form-control" id="myInput" type="text" placeholder="Search..">
-
-      <% for(var i=0; i<arr2.length; i++ ){ %>
-        <li>
-          <a href="#"> <%= arr2[i] %> </a>
-        </li>
-
-
-  <%  } %>
-
-      <li><a href="#">HTML</a></li>
-      <li><a href="#">CSS</a></li>
-      <li><a href="#">JavaScript</a></li>
-      <li><a href="#">jQuery</a></li>
-      <li><a href="#">Bootstrap</a></li>
-      <li><a href="#">Angular</a></li>
-    </ul>
-  </div>
-</div>
-
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $(".dropdown-menu li").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>
-
-
-
-
-</body>
-</html>
+<%- include('partials/footer') %>

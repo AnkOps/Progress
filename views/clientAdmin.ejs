@@ -1,0 +1,53 @@
+<%- include('partials/header') %>
+
+
+
+<div class="jumbotron centered">
+
+
+<h1> <%= company.companyName %> </h1>
+
+
+<!-- <h2>Assign Task</h2> -->
+
+
+<!-- <p>Lorem ipsum dolor sit amet</p> -->
+<div class="container">
+        <form method="post" action="/register-task">
+            <h2>Assign Task</h2>
+            <input type="hidden" id="clientName" name="clientName" value="<%= company.companyName %>">
+            <p>Employee Name:
+                <select name="empId" id="empId" required>
+                    <option value="">--select employee name--</option>
+                  <%   for(var i=0;i<empList.length;i++){ %>
+
+
+                    <option value= <%= empList[i]._id %>> <%=empList[i].firstname %> <%= empList[i].lastname %> </option>
+
+                <%  } %>
+                </select>
+            </p>
+
+            <p>Task: <input type="text" name="task" id="task" required placeholder="Enter the task"> </p>
+
+            <p>Set Deadline: <input type="date" name="deadline" id="deadline" required placeholder="Enter the deadline"> </p>
+
+
+            <P>Remark: <textarea name="remark" id="remark" cols="110" rows="3" placeholder="Enter remarks"></textarea></P>
+
+            <p>
+                <input type="reset" value="Reset all">
+                <input type="submit" value="Assign">
+            </p>
+        </form>
+</div>
+
+<div class="container">
+        <h2>View Tasks</h2>
+
+
+</div>
+
+</div>
+
+<%- include('partials/footer') %>

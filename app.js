@@ -8,10 +8,18 @@ const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const app=express();
+const date=require(__dirname + "/date.js");
 
 // const encrypt = require("mongoose-encryption");
-// const secret = "thisisasecretwritteninplainenglish";
 
+
+
+
+
+
+
+
+var arr=[];
 
 app.use(express.static("public"));
 mongoose.set('useFindAndModify', false);
@@ -44,10 +52,21 @@ const userSchema = new mongoose.Schema({
 
 
 });
+//mongoose schema for taskAssigned
+const taskSchema = new mongoose.Schema({
+  partner: String,
+  clientName: String,
+  employeeAssigned: String,
+  deadline: String,
+  date: String,
+  task: String,
+  remarks: String,
+  status: String
+});
 
+const task = new mongoose.model("task", taskSchema);
 
 //use middleware passport-local-mongoose (npm module)
-
 userSchema.plugin(passportLocalMongoose);
 
 
@@ -77,13 +96,15 @@ passport.deserializeUser(User.deserializeUser());
 
 app.get("/", function(req, res){
   if(req.isAuthenticated()){
-    res.redirect("/" + req.user.id)
+    res.redirect("/users/" + req.user.id)
   }
   else{
     res.render("home");
 
   }
 });
+
+
 
 app.get("/login", function(req, res){
   if(req.isAuthenticated()){
@@ -98,30 +119,26 @@ app.get("/register", function(req, res){
   res.render("register");
 });
 
-// db.clients.find(funtion(err, foundClient){
-//   arr.pushback(foundClient)
-// })
-
-
-const arr2= [];
-
 
 //sending clientList as array
 app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
-    
+
     if(req.user.privilege==="admin"){
-      User.find({privilege: "emp"}, function(err,foundUser){
+      client.find({}, function(err,foundUser){
         if(err){
           throw err;
         }
         else{
         for (var i=0; i<foundUser.length;i++){
-          arr2.push(foundUser[i].username);
-          console.log(foundUser[i].username);
+          arr.push(foundUser[i].companyName);
+
+
         }}
+        res.render("partner", {name: req.user.firstname, arr: foundUser});
       });
-      res.render("partner", {name: req.user.firstname, arr2: arr2});
+      console.log(arr[0]);
+
     }
     else{
       res.render("employee", {name:req.user.firstname});
@@ -130,12 +147,51 @@ app.get("/users/:name", function(req, res){
 })
 
 
+//client portal
+app.get("/clients/:name", function(req,res){
+  if(req.isAuthenticated()){
+
+    if(req.user.privilege==="admin"){
+      var companyId = req.params.name;
+      console.log(companyId);
+      client.findById(companyId,function(err,company){
+        User.find({privilege: "emp"}, function(req, foundEmployee){
+          res.render("clientAdmin", {company: company, empList: foundEmployee});
+        })
+
+      });
+
+    }
+    else{
+      res.render("clientEmp");
+    }
+  }
+})
+
+//logout route
+app.get("/logout", function(req, res){
+  req.logout();
+  res.redirect("/");
+});
+
+
+
+app.get("/secrets", function(req, res){
+  if(req.isAuthenticated()){
+    res.render("secrets");
+  } else{
+    res.redirect("/login");
+  }
+});
+
+//register a new client
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+
 //Login route
 app.post("/login", function(req,res){
-
-
-
-
 
     const user = new User({
       username: req.body.username,
@@ -173,18 +229,23 @@ app.post("/login", function(req,res){
 
 });
 
-app.get("/logout", function(req, res){
-  req.logout();
-  res.redirect("/");
-});
 
-app.get("/secrets", function(req, res){
-  if(req.isAuthenticated()){
-    res.render("secrets");
-  } else{
-    res.redirect("/login");
-  }
-});
+//register task to employees
+app.post("/register-task", function(req,res){
+  const addTask = new task({
+    partner: req.user.id,
+    clientName: req.body.clientName,
+    employeeAssigned: req.body.empId,
+    deadline: req.body.deadline,
+    date: date.getDate(),
+    task: req.body.task,
+    remarks: req.body.remarks,
+    status: "Incomplete"
+  })
+  addTask.save(function(){
+    res.render("success");
+  });
+})
 
 app.post("/register-lvl2", function(req,res){
   User.findById(req.user.id, function(err, foundUser){
@@ -225,9 +286,6 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 
 
 });
-app.get("/register-client", function(req,res){
-  res.render("register-client");
-})
 
 app.post("/register-client", function(req,res){
   const addClient = new client({
@@ -246,20 +304,6 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
-
-
-
-app.get("/register-client", function(req, res){
-  
-    res.render("register-client");
-});
-
-
-
-
-
-
-
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");

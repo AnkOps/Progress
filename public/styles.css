@@ -1,6 +1,6 @@
-
-body {
-  background-color: #0091ff;
+/*
+ body {
+  background-color: #E8ECEF;
   text-align: center;
 }
 
@@ -49,19 +49,84 @@ body {
 	margin-top: 25px;
 	font-size: 12px;
   color: #fff;
+} */
+
+body {
+  background-color: #E8ECEF;
+  /* text-align: center; */
 }
 
-.main-container{
+.centered {
+    padding-top: 200px;
+    /* text-align: center; */
+}
+
+.secret-text {
+  /* text-align: center; */
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+.login-signup{
+ margin-left: 15%;
+margin-top: 20px;
+margin-bottom: 130px;
+
+
+}
+
+
+
+/* styling navigation bar */
+#navbar{
+  background-color: black;
+  height: 100px;
   display: flex;
-  flex-direction: column;
+  /* justify-content: center; */
   align-items: center;
-  justify-content: center;
-  width: 100%;
 }
-.progress-box-container{
-  width: 500px
+#navbar ul{
+  display: flex;
+  list-style: none;
+  /* border: 5px solid red; */
+  margin-left: 750px;
+  margin-top: 30px;
 }
 
-*{
-  background-color: red;
+#navbar h1{
+  margin-left: 30px;
+  color: white;
+}
+#navbar ul a{
+  text-decoration: none;
+  color: white;
+  margin: 0px 10px;
+  padding: 0px 10px;
+  font-family: 'Stick', sans-serif;
+  font-size: 17px;
+}
+#navbar ul a:hover{
+  background-color: white;
+  color: black;
+  border-radius: 30px;
+}
+
+
+/* stylling footer */
+footer{
+  height: 50px;
+  /* border: 5px solid rgb(226, 42, 72); */
+  background-color: black;
+  display: flex;
+  align-items: center;
+}
+footer a{
+  color: white;
+  margin: 20px 20px;
+  padding: 5px 10px;
+}
+footer a:hover{
+  background-color: white;
+  color: black;
+  border-radius: 30px;
 }
