@@ -14,6 +14,14 @@ const date=require(__dirname + "/date.js");
 
 var arr=[];
 
+
+
+
+
+
+
+var arr=[];
+
 app.use(express.static("public"));
 mongoose.set('useFindAndModify', false);
 mongoose.connect("mongodb://localhost:27017/PROgressDB", { useUnifiedTopology: true }, {useNewUrlParser: true});
@@ -115,9 +123,11 @@ app.get("/register", function(req, res){
   res.render("register");
 });
 
+
 // db.clients.find(funtion(err, foundClient){
 //   arr.pushback(foundClient)
 // })
+
 
 //sending clientList as array
 app.get("/users/:name", function(req, res){
@@ -151,12 +161,15 @@ app.get("/users/:name", function(req, res){
 app.get("/clients/:name", function(req,res){
   if(req.isAuthenticated()){
 
+
     if(req.user.privilege==="admin"){
 
       var companyId = req.params.name;
 
 
+
       client.findById(companyId,function(err,company){
+
 
         User.find({privilege: "emp"}, function(req, foundEmployee){
             client.findById(companyId, function(req, foundClient){
@@ -190,6 +203,7 @@ app.get("/logout", function(req, res){
 
 
 
+
 //register a new client
 app.get("/register-client", function(req,res){
   res.render("register-client");
@@ -197,6 +211,7 @@ app.get("/register-client", function(req,res){
 
 
 //Login route
+
 app.post("/login",
 
     // const user = new User({
@@ -206,6 +221,7 @@ app.post("/login",
 
 
     // req.login(user, function(err){
+
 
 
 
@@ -233,6 +249,7 @@ app.post("/login",
 
       // });
 
+
     //   else{
     //
     //     console.log(err);
@@ -259,6 +276,7 @@ console.log(emp);
     partner: req.user.id,
     clientName: req.body.clientName,
     employeeAssigned: emp,
+
     deadline: req.body.deadline,
     date: date.getDate(),
     task: req.body.task,
@@ -309,9 +327,6 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 
 
 });
-app.get("/register-client", function(req,res){
-  res.render("register-client");
-})
 
 app.post("/register-client", function(req,res){
   const addClient = new client({
@@ -330,6 +345,7 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
+
 
 
 
@@ -362,6 +378,7 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
+
 
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
