@@ -1,0 +1,16 @@
+.client-container{
+    padding: 2rem 2rem;
+}
+
+.client-main-container{
+    margin-top: 5%;
+    margin-bottom: 10%;
+    margin-left: 0%;
+}
+
+.client-container h1{
+    text-align: center;
+    background-color: white;
+    margin: 2% 5%;
+    border-radius: 5px;
+}
