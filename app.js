@@ -144,14 +144,27 @@ app.get("/users/:name", function(req, res){
 
 
         }}
-        res.render("partner", {name: req.user.firstname, arr: foundUser});
+
+        const partnerName = req.user.firstname;
+        task.find({}, function(req, foundTask){
+
+          
+          res.render("partner", {name: partnerName, arr: foundUser, taskList:foundTask});
+        })
+
       });
       console.log(arr[0]);
 
 
     }
     else{
-      res.render("employee", {name:req.user.firstname});
+      const employeeName = req.user.firstname+" "+req.user.lastname;
+      task.find({employeeAssigned: employeeName}, function(req, foundTask){
+
+        res.render("employee", {name:employeeName, taskList:foundTask});
+      })
+
+
     }
   }
 })
@@ -266,26 +279,29 @@ app.post("/login",
 //register task to employees
 app.post("/register-task", function(req,res){
 
-  User.findById(req.body.empId, function(err, foundUser){
+  User.findById(req.body.employeeName, function(err, foundUser){
     emp=foundUser.firstname+" "+foundUser.lastname;
     console.log(emp);
     console.log(foundUser);
+
+    const addTask = new task({
+      partner: req.user.id,
+      clientName: req.body.clientName,
+      employeeAssigned: emp,
+  
+      deadline: req.body.deadline,
+      date: date.getDate(),
+      task: req.body.task,
+      remarks: req.body.remarks,
+      status: "Incomplete"
+    })
+
+    addTask.save(function(){
+      res.render("success");
+    });
+
   });
 console.log(emp);
-  const addTask = new task({
-    partner: req.user.id,
-    clientName: req.body.clientName,
-    employeeAssigned: emp,
-
-    deadline: req.body.deadline,
-    date: date.getDate(),
-    task: req.body.task,
-    remarks: req.body.remarks,
-    status: "Incomplete"
-  })
-  addTask.save(function(){
-    res.render("success");
-  });
 })
 
 app.post("/register-lvl2", function(req,res){
