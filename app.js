@@ -214,18 +214,6 @@ app.get("/register-client", function(req,res){
 
 app.post("/login",
 
-    // const user = new User({
-    //   username: req.body.username,
-    //   password: req.body.password
-    // });
-
-
-    // req.login(user, function(err){
-
-
-
-
-
         passport.authenticate("local", { failureRedirect: '/login' }),
         function(req, res){
           User.findById(req.user.id,function(error, foundUser){
@@ -326,7 +314,50 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 });
 
 
+
+
+app.get("/register-client", function(req,res){
+  res.render("register-client");
+})
+
+app.post("/register-client", function(req,res){
+  if(req.isAuthenticated()){
+    const addClient = new client({
+      companyName: req.body.companyName,
+      ownerName: req.body.ownerName,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      pinCode: req.body.pinCode,
+      gst: req.body.gst
+
+    });
+    addClient.save();
+    res.render("success");
+  }
+  else{
+    res.redirect("/login");
+  }
+
+
+})
+
+
+
+app.get("/register-client", function(req, res){
+
+    res.render("register-client");
 });
+
+
+
+
+
+
+
+
 
 app.post("/register-client", function(req,res){
   const addClient = new client({
