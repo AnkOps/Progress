@@ -120,7 +120,14 @@ app.get("/login", function(req, res){
 });
 
 app.get("/register", function(req, res){
-  res.render("register");
+  if(req.isAuthenticated()){
+    res.render("register");
+  }
+  else{
+    res.redirect("/login");
+  }
+
+
 });
 
 
@@ -144,14 +151,27 @@ app.get("/users/:name", function(req, res){
 
 
         }}
-        res.render("partner", {name: req.user.firstname, arr: foundUser});
+
+        const partnerName = req.user.firstname;
+        task.find({}, function(req, foundTask){
+
+
+          res.render("partner", {name: partnerName, arr: foundUser, taskList:foundTask});
+        })
+
       });
       console.log(arr[0]);
 
 
     }
     else{
-      res.render("employee", {name:req.user.firstname});
+      const employeeName = req.user.firstname+" "+req.user.lastname;
+      task.find({employeeAssigned: employeeName}, function(req, foundTask){
+
+        res.render("employee", {name:employeeName, taskList:foundTask});
+      })
+
+
     }
   }
 })
@@ -206,13 +226,32 @@ app.get("/logout", function(req, res){
 
 //register a new client
 app.get("/register-client", function(req,res){
-  res.render("register-client");
+  if(req.isAuthenticated()){
+    res.render("register-client");
+  }
+  else{
+    res.render("/login");
+  }
 })
+
+
 
 
 //Login route
 
 app.post("/login",
+
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password
+    // });
+
+
+    // req.login(user, function(err){
+
+
+
+
 
         passport.authenticate("local", { failureRedirect: '/login' }),
         function(req, res){
@@ -254,26 +293,29 @@ app.post("/login",
 //register task to employees
 app.post("/register-task", function(req,res){
 
-  User.findById(req.body.empId, function(err, foundUser){
+  User.findById(req.body.employeeName, function(err, foundUser){
     emp=foundUser.firstname+" "+foundUser.lastname;
     console.log(emp);
     console.log(foundUser);
+
+    const addTask = new task({
+      partner: req.user.id,
+      clientName: req.body.clientName,
+      employeeAssigned: emp,
+
+      deadline: req.body.deadline,
+      date: date.getDate(),
+      task: req.body.task,
+      remarks: req.body.remarks,
+      status: "Assigned"
+    })
+
+    addTask.save(function(){
+      res.render("success");
+    });
+
   });
 console.log(emp);
-  const addTask = new task({
-    partner: req.user.id,
-    clientName: req.body.clientName,
-    employeeAssigned: emp,
-
-    deadline: req.body.deadline,
-    date: date.getDate(),
-    task: req.body.task,
-    remarks: req.body.remarks,
-    status: "Incomplete"
-  })
-  addTask.save(function(){
-    res.render("success");
-  });
 })
 
 app.post("/register-lvl2", function(req,res){
@@ -314,50 +356,7 @@ User.register({username: req.body.username }, req.body.password, function(err, u
 });
 
 
-
-
-app.get("/register-client", function(req,res){
-  res.render("register-client");
-})
-
-app.post("/register-client", function(req,res){
-  if(req.isAuthenticated()){
-    const addClient = new client({
-      companyName: req.body.companyName,
-      ownerName: req.body.ownerName,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      address: req.body.address,
-      city: req.body.city,
-      state: req.body.state,
-      pinCode: req.body.pinCode,
-      gst: req.body.gst
-
-    });
-    addClient.save();
-    res.render("success");
-  }
-  else{
-    res.redirect("/login");
-  }
-
-
-})
-
-
-
-app.get("/register-client", function(req, res){
-
-    res.render("register-client");
 });
-
-
-
-
-
-
-
-
 
 app.post("/register-client", function(req,res){
   const addClient = new client({
@@ -381,8 +380,13 @@ app.post("/register-client", function(req,res){
 
 
 app.get("/register-client", function(req, res){
-
+  if(req.isAuthenticated()){
     res.render("register-client");
+  }
+  else{
+      res.redirect("/login");
+  }
+
 });
 
 
