@@ -19,22 +19,22 @@
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
-  
+
       <% for(var i=0; i<arr.length; i++ ){ %>
           <li>
-  
+
             <a href="/clients/<%= arr[i]._id %>" > <%= arr[i].companyName %> </a>
           </li>
-  
-  
+
+
     <%  } %>
-  
+
     </ul>
   </div>
 
 </div>
 
-  
+
 
 </div>
 
@@ -50,13 +50,7 @@ $(document).ready(function(){
 </script>
 
 
-<a href="/register-client"><h2>Register a client</h2></a>
 
 
 
 <%- include('partials/footer') %>
-
-
-
-<%- include('partials/footer') %>
-
