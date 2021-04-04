@@ -49,8 +49,13 @@ const userSchema = new mongoose.Schema({
   password: String,
   firstname: String,
   lastname: String,
-  privilege: String
-
+  privilege: String,
+  status: String,
+  contactNumber: Number,
+  aadharNumber: Number,
+  state: String,
+  city: String,
+  address: String
 
 });
 //mongoose schema for taskAssigned
@@ -153,7 +158,7 @@ app.get("/users/:name", function(req, res){
         })
 
       });
-      console.log(arr[0]);
+      // console.log(arr[0]);
 
 
     }
@@ -206,6 +211,36 @@ app.get("/clients/:name", function(req,res){
   }
 })
 
+
+
+app.get("/employee-page/:name", function(req, res){
+  if(req.isAuthenticated()){
+
+    if(req.user.privilege==="admin"){
+      
+      let employeeId = req.params.name;
+
+      User.find({_id: employeeId}, function(req, foundEmployee){
+        // console.log(foundEmployee);
+        // console.log(foundEmployee[0].firstname);
+        // console.log(foundEmployee[0].lastname);
+
+        let employeeName = foundEmployee[0].firstname+" "+foundEmployee[0].lastname;
+        // console.log(employeeName);
+
+        task.find({employeeAssigned: employeeName}, function(req, foundTask){
+          // console.log(foundTask);
+
+          res.render('employeePage', {employee:foundEmployee[0], taskList:foundTask})
+        })
+      })
+    }
+  }
+})
+
+
+
+
 //logout route
 app.get("/logout", function(req, res){
   req.logout();
@@ -214,6 +249,18 @@ app.get("/logout", function(req, res){
 
 
 
+//View all associates
+app.get("/view-associates", function(req,res){
+
+  User.find({privilege: "emp"}, function(req, foundEmployee){
+
+    User.find({privilege: "admin"}, function(req, foundPartner){
+
+      res.render("associates", {employee: foundEmployee, partner: foundPartner});
+    })
+  })
+
+})
 
 
 
@@ -281,8 +328,8 @@ app.post("/register-task", function(req,res){
 
   User.findById(req.body.employeeName, function(err, foundUser){
     emp=foundUser.firstname+" "+foundUser.lastname;
-    console.log(emp);
-    console.log(foundUser);
+    // console.log(emp);
+    // console.log(foundUser);
 
     const addTask = new task({
       partner: req.user.id,
@@ -293,7 +340,7 @@ app.post("/register-task", function(req,res){
       date: date.getDate(),
       task: req.body.task,
       remarks: req.body.remarks,
-      status: "Incomplete"
+      status: "Assigned"
     })
 
     addTask.save(function(){
@@ -301,7 +348,7 @@ app.post("/register-task", function(req,res){
     });
 
   });
-console.log(emp);
+// console.log(emp);
 })
 
 app.post("/register-lvl2", function(req,res){
@@ -315,7 +362,14 @@ app.post("/register-lvl2", function(req,res){
       if(foundUser){
         foundUser.firstname = req.body.firstName;
         foundUser.lastname = req.body.lastName;
-        foundUser.privilege=req.body.privilege;
+        foundUser.privilege = req.body.privilege;
+        foundUser.status = "Active";
+        foundUser.contactNumber = req.body.contactNumber;
+        foundUser.aadharNumber = req.body.aadharNumber;
+        foundUser.state = req.body.state;
+        foundUser.city = req.body.city;
+        foundUser.address = req.body.address;
+
         foundUser.save(function(){
           res.render("success");
         })

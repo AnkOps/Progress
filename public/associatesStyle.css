@@ -1,0 +1,70 @@
+ /* styling client list section */
+
+ .heading h1{
+   width: 95%;
+   margin: auto;
+   font-family:Georgia;
+ }
+
+ hr{
+   width: 95%;
+   margin: auto;
+   border-color: rgb(206, 206, 206);
+ }
+
+ .jumbotron-container{
+   background-color: #f9f9f9;
+ }
+
+
+ .associates-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .associates-section-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .associates-section div {
+    padding: 1.1%;
+    width: 70%;
+    margin: 1%;
+  }
+
+  .associates-container {
+    padding: 10%;
+    border-bottom: 1px solid rgb(204, 204, 204);
+  }
+
+  .associates-container:hover {
+    /* box-shadow: 5px 5px 18px #888888; */
+    transition: 0.3s;
+    box-shadow: 0 3px 5px #888888;
+  }
+
+  .associates-container:hover h3 {
+    /* box-shadow: 5px 5px 18px #888888; */
+    transition: 0.3s;
+    /* box-shadow: 0 3px 5px #888888; */
+    text-shadow: 2px 2px 5px rgb(216, 216, 216);
+  }
+
+  .associates-section h3 {
+    font-size: 130%;
+    color: rgb(167, 167, 167);
+  }
+
+  .associates-section a {
+    text-decoration: none;
+    color: rgb(24, 24, 24);
+  }
+
+  .associates-section a:hover {
+    text-decoration: underline;
+  }

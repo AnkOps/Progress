@@ -11,6 +11,7 @@
     <p>Hope you're doing well? Have a great day at work..</p>
     <a href="/register-client"><h5>Register a client >></h5></a>
     <a href="/register"><h5>Register associates >></h5></a>
+    
   </div>
 
 
@@ -33,6 +34,7 @@
   </div>
 
 </div>
+<div id="all-associates-button"><h5> <a href="/view-associates">Associates >></a> </h5></div>
 
   
 
@@ -55,57 +57,19 @@ $(document).ready(function(){
 <section id="allTasks">
   <div id="all-tasks-container">
     <h1>Task details </h1>
-    <div id="filter-container">
-      <div id="status-container">
-        <p>Staus: <select name="" id="">
-            <option value="">--select status-- </option>
-            <option value="">Assigned </option>
-            <option value="">Missing </option>
-            <option value="">Done</option>
-          </select></p>
-      </div>
-      <div id="month-container">
-        <p>Month: <select name="" id="">
-            <option value="">--select month-- </option>
-            <option value="">January </option>
-            <option value="">February </option>
-            <option value="">March </option>
-            <option value="">April </option>
-            <option value="">May </option>
-            <option value="">June </option>
-            <option value="">July </option>
-            <option value="">August </option>
-            <option value="">September </option>
-            <option value="">October </option>
-            <option value="">November </option>
-            <option value="">December </option>
-          </select></p>
-      </div>
-      <div id="year-container">
-        <p>Year: <select name="" id="">
-            <option value="">--select Year-- </option>
-            <option value="">2018 </option>
-            <option value="">2019 </option>
-            <option value="">2020</option>
-            <option value="">2021</option>
-            <option value="">2022</option>
-            <option value="">2023</option>
-            <option value="">2024</option>
-          </select></p>
-      </div>
-      <div id="filter-button"><button>Filter</button></div>
-    </div>
+    <p><a href="#">View all Tasks >></a></p>
+
+    <hr>
     
     <div id="table-container"></div>
     <table>
       <thead>
         <tr>
-          <th style="min-width: 10%">Date </th>
-          <th style="min-width: 20%">Employee assigned </th>
           <th style="min-width: 20%">Task </th>
+          <th style="min-width: 20%">Employee assigned </th>
           <th style="min-width: 20%">Client </th>
           <th style="min-width: 10%">Deadline </th>
-          <th style="min-width: 25%">Remark </th>
+          <th style="min-width: 25%">Status </th>
         </tr>
       </thead>
       
@@ -115,12 +79,11 @@ $(document).ready(function(){
 
         <tbody>
           <tr>
-            <td><%= taskList[i].date %> </td>
-            <td><%= taskList[i].employeeAssigned %> </td>
             <td><%= taskList[i].task %> </td>
+            <td><%= taskList[i].employeeAssigned %> </td>
             <td><%= taskList[i].clientName %> </td>
             <td><%= taskList[i].deadline %></td>
-            <td><%= taskList[i].remarks %> </td>
+            <td><%= taskList[i].status %> </td>
           </tr>
         </tbody>
 
