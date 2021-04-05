@@ -131,3 +131,19 @@ button:hover {
 }
 
 
+/* styling task page category */
+.task-category-container ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.task-category-container ul li{
+    list-style-type: none;
+    width: 10%;
+    
+}
+
+
+.task-details-container p{
+    /* font-size: large; */
+}

@@ -63,6 +63,7 @@ const taskSchema = new mongoose.Schema({
   partner: String,
   clientName: String,
   employeeAssigned: String,
+  employeeId: String,
   deadline: String,
   date: String,
   task: String,
@@ -240,6 +241,77 @@ app.get("/employee-page/:name", function(req, res){
 
 
 
+app.get("/partner-page/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      let partnerId = req.params.name;
+      User.find({_id: partnerId}, function(req, foundPartner){
+        res.render('partnerPage', {partner:foundPartner[0]})
+      })
+    }
+  }
+})
+
+
+app.get("/assigned-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Assigned"}, function(req, foundAssignedTask){
+        res.render('assignedTaskList', {assignedTask: foundAssignedTask});
+      })
+    }
+  }
+});
+
+
+app.get("/missing-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Missing"}, function(req, foundMissingTask){
+        res.render('missingTaskList', {missingTask: foundMissingTask});
+      })
+    }
+  }
+});
+
+
+app.get("/done-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Done"}, function(req, foundDoneTask){
+        res.render('doneTaskList', {doneTask: foundDoneTask});
+      })
+    }
+  }
+});
+
+
+app.get("/task-details/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      let taskId = req.params.name;
+      task.find({_id: taskId}, function(req, foundTask){
+        
+        let partnerId = foundTask[0].partner;
+        User.find({_id: partnerId}, function(req, foundPartner){
+
+          client.find({companyName: foundTask[0].clientName}, function(req, foundClient){
+
+            res.render("taskDetailsPage", {taskDetails: foundTask[0], partnerDetails: foundPartner[0], clientDetails: foundClient[0],});
+          })
+        })
+      })
+    }
+  }
+})
+
+
+
 
 //logout route
 app.get("/logout", function(req, res){
@@ -330,12 +402,13 @@ app.post("/register-task", function(req,res){
     emp=foundUser.firstname+" "+foundUser.lastname;
     // console.log(emp);
     // console.log(foundUser);
-
+    // console.log(foundUser._id);
+    
     const addTask = new task({
       partner: req.user.id,
       clientName: req.body.clientName,
       employeeAssigned: emp,
-  
+      employeeId: foundUser._id,
       deadline: req.body.deadline,
       date: date.getDate(),
       task: req.body.task,

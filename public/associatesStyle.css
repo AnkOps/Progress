@@ -68,3 +68,56 @@
   .associates-section a:hover {
     text-decoration: underline;
   }
+
+
+
+  /* styling task container */
+.task-list-section h5, p, h6, h4{
+  margin: 0;
+}
+.task-list-section p{
+  font-size: small;
+}
+
+.task-list-section{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.single-task-container{
+  margin: 1.5% 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+/* .single-task-container:hover{
+  
+    transition: 0.3s;
+    box-shadow: 0 3px 5px #888888;
+    padding: 0.5% 1%;
+    border-radius: 5px;
+} */
+
+
+
+.all-task-list-container{
+  width: 65%;
+  margin: 1% 0%;
+}
+
+.task-information-container{
+  width: 70%;
+}
+.task-status-container{
+  width: 30%;
+}
+
+.task-status{
+  text-align: right;
+}
+.task-deadline{
+  text-align: right;
+}
