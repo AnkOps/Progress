@@ -152,10 +152,11 @@ app.get("/users/:name", function(req, res){
         }}
 
         const partnerName = req.user.firstname;
+        let partnerEmail = req.user.username;
         task.find({}, function(req, foundTask){
 
           
-          res.render("partner", {name: partnerName, arr: foundUser, taskList:foundTask});
+          res.render("partner", {name: partnerName, arr: foundUser, taskList:foundTask, email:partnerEmail});
         })
 
       });
@@ -164,10 +165,12 @@ app.get("/users/:name", function(req, res){
 
     }
     else{
+      const employeeUserId = req.user._id;
+      const employeeEmail = req.user.username;
       const employeeName = req.user.firstname+" "+req.user.lastname;
       task.find({employeeAssigned: employeeName}, function(req, foundTask){
 
-        res.render("employee", {name:employeeName, taskList:foundTask});
+        res.render("employee", {name:employeeName, taskList:foundTask, userId: employeeUserId, email:employeeEmail});
       })
 
 
@@ -290,6 +293,7 @@ app.get("/done-task-list", function(req, res){
 });
 
 
+
 app.get("/task-details/:name", function(req, res){
   if(req.isAuthenticated()){
     if(req.user.privilege==="admin"){
@@ -309,6 +313,69 @@ app.get("/task-details/:name", function(req, res){
     }
   }
 })
+
+
+
+app.get("/assigned-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+    
+      task.find({employeeId: assignedEmployeeId, status: "Assigned"}, function(req, foundTask){
+        res.render("employeeAssignedTasks", {assignedTask: foundTask});
+      })
+    }
+  }
+})
+
+
+app.get("/missing-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+    
+      task.find({employeeId: assignedEmployeeId, status: "Missing"}, function(req, foundTask){
+        res.render("employeeMissingTasks", {missingTask: foundTask});
+      })
+    }
+  }
+})
+
+
+app.get("/done-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+    
+      task.find({employeeId: assignedEmployeeId, status: "Done"}, function(req, foundTask){
+        res.render("employeeDoneTasks", {doneTask: foundTask});
+      })
+    }
+  }
+})
+
+
+app.get("/employee-task-details/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let taskId = req.params.name;
+
+      task.find({_id: taskId}, function(req, foundTask){
+
+        User.find({_id: foundTask[0].partner}, function(req, foundPartner){
+
+          res.render("employeeTaskDetail", {taskDetails: foundTask[0], partnerDetails:foundPartner[0]});
+        })
+      })
+    }
+  }
+})
+
+
 
 
 

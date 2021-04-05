@@ -147,3 +147,14 @@ button:hover {
 .task-details-container p{
     /* font-size: large; */
 }
+
+.task-details-card-container{
+    margin: 1% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-details-card{
+    margin: 4% 2%;
+}
