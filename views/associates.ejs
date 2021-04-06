@@ -1,0 +1,53 @@
+<%- include('partials/associatesHeader') %>
+
+  <div class="jumbotron centered jumbotron-container">
+
+    <div class="heading">
+      <h1>Partner</h1>
+    </div>
+  
+    <hr>
+  
+    <section class="associates-section">
+      <div class="associates-section-container">
+  
+        <% for(var i=partner.length-1;i>=0;i--){ %>
+  
+  
+          <div class="associates-container">
+            <h4><a href="/partner-page/<%= partner[i]._id %>"> <%= partner[i].firstname %>  <%= partner[i].lastname %> </a></h4>
+          </div>
+  
+        <% } %>
+        
+        
+      </div>
+    </section>
+  
+    <div class="heading">
+      <h1>Employee</h1>
+    </div>
+  
+    <hr>
+    <section class="associates-section">
+      <div class="associates-section-container">
+  
+        <% for(var i=employee.length-1;i>=0;i--){ %>
+  
+          <div class="associates-container">
+            <h4><a href="/employee-page/<%= employee[i]._id %>"> <%= employee[i].firstname %>  <%= employee[i].lastname %> </a></h4>
+          </div>
+  
+        <% } %>
+  
+        
+        
+      </div>
+    </section>
+    
+  </div>
+
+
+
+
+<%- include('partials/footer') %>

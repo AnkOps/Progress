@@ -1,0 +1,35 @@
+<%- include('partials/partnerHeader') %>
+
+
+
+<div class="jumbotron centred partner-home-container">
+  <div class="dashboard-heading"><h1>Task details</h1></div>
+  <div id="partner-home-header">
+  
+  
+    <div class="greetings task-details-container">
+
+      <p style="font-weight: bold; font-size: larger; ">Task: <%= taskDetails.task %> </p>
+      <p>Client: <a href="/clients/<%= clientDetails._id%>"> <%= taskDetails.clientName %> </a></p>
+      <p>Employee Assigned: <a href="/employee-page/<%= taskDetails.employeeId%>"> <%= taskDetails.employeeAssigned %> </a> </p>
+      <p>Assigned by:  <%= partnerDetails.firstname%>  <%= partnerDetails.lastname%>  </p>
+      <p>Date of Assign:- <%= taskDetails.date %> </p>
+      <p>Status: 
+          
+        <% if( taskDetails.status === "Assigned"){ %> <span style="color: rgb(2, 211, 2);"><%= taskDetails.status %></span> <% } %>  
+        
+        <% if( taskDetails.status === "Missing"){ %> <span style="color: rgb(253, 0, 0);"><%= taskDetails.status %></span> <% } %>  
+        
+        <% if( taskDetails.status === "Done"){ %> <span style="font-weight: bold;"><%= taskDetails.status %></span> <% } %> </p>
+
+      <p>Deadline:- <%= taskDetails.deadline %> </p>
+      <p>Remarks: <%= taskDetails.remarks %> </p>
+      
+      <a href="#"> <p>Edit & Update >></p> </a>
+    </div>
+  </div>
+</div>
+
+
+  
+<%- include('partials/footer') %>
