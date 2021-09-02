@@ -3,13 +3,21 @@
 
 
 <div class="jumbotron centred partner-home-container">
-  <div class="dashboard-heading"><h1>Employee dashboard</h1></div>
+  <div class="dashboard-heading"><h1>Employee details</h1></div>
   <div id="partner-home-header">
   
   
     <div class="greetings">
-      <h3>Welcome! Mr. <%=name %> </h3>
-      <p><i class="fas fa-user"></i>  User email: <%=email %></p>
+
+      <p style="font-weight: bold; font-size: large; ">Name: <%= employee.firstname %>  <%= employee.lastname %> </p>
+      <p>Email: <%= employee.username %> </p>
+      <p>Status: <%= employee.status %> </p>
+      <p>Contact Number: <%= employee.contactNumber %> </p>
+      <p>Aadhar: <%= employee.aadharNumber %> </p>
+      <p>State: <%= employee.state %> </p>
+      <p>City: <%= employee.city %> </p>
+      <p>Full Address: <%= employee.address %> </p>
+      <a href="#"> <p>Edit Information >></p> </a>
     </div>
   </div>
 </div>
@@ -18,7 +26,8 @@
 <section id="allTasks">
   <div id="all-tasks-container">
     <h1>Task details </h1>
-    <p><a href="/assigned-task/<%= userId%>">View all Tasks >></a></p>
+    <p><a href="/assigned-task-list">View all Tasks >></a></p>
+    
     
     <hr>
 

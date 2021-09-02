@@ -1,0 +1,42 @@
+<%- include('partials/associatesHeader') %>
+
+<div class="jumbotron centered jumbotron-container">
+
+<div class="task-category-container">
+    <ul>
+        <li>Assigned</li>
+        <li><a href="/missing-task/<%= assignedTask[0].employeeId %>">Missing</a></li>
+        <li><a href="/done-task/<%= assignedTask[0].employeeId %>">Done</a></li>
+    </ul>
+    <hr style="width:75%">
+</div>
+
+<section class="task-list-section">
+    <div class="all-task-list-container">
+
+        <% for(var i=assignedTask.length-1; i>=0; i--){%>
+        
+            <div class="single-task-container">
+                <div class="task-information-container">
+        
+                    <h4>Task: <a href="/employee-task-details/<%= assignedTask[i]._id %>"><%= assignedTask[i].task %></a></h4>
+                    <p>Client: <%= assignedTask[i].clientName %></p>
+                    <p>Date of Assign: <%= assignedTask[i].date %></p>
+                    <!-- <p>Employee Assigned: <%= assignedTask[i].employeeAssigned %></p> -->
+                </div>
+                <div class="task-status-container">
+                    <h6 class="task-status" style="color: rgb(3, 219, 3);"> <%= assignedTask[i].status%> </h6>
+                    <p class="task-deadline"> <%= assignedTask[i].deadline%> </p>
+                </div>
+            </div>
+            <hr>
+        
+        <% } %>
+
+    </div>
+
+</section>
+
+</div>
+
+<%- include('partials/footer') %>

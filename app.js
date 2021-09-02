@@ -49,8 +49,13 @@ const userSchema = new mongoose.Schema({
   password: String,
   firstname: String,
   lastname: String,
-  privilege: String
-
+  privilege: String,
+  status: String,
+  contactNumber: Number,
+  aadharNumber: Number,
+  state: String,
+  city: String,
+  address: String
 
 });
 //mongoose schema for taskAssigned
@@ -58,6 +63,7 @@ const taskSchema = new mongoose.Schema({
   partner: String,
   clientName: String,
   employeeAssigned: String,
+  employeeId: String,
   deadline: String,
   date: String,
   task: String,
@@ -120,13 +126,15 @@ app.get("/login", function(req, res){
 });
 
 app.get("/register", function(req, res){
-  res.render("register");
+  if(req.isAuthenticated()){
+    res.render("register");
+  }
+  else{
+    res.redirect("/login");
+  }
+
+
 });
-
-
-// db.clients.find(funtion(err, foundClient){
-//   arr.pushback(foundClient)
-// })
 
 
 //sending clientList as array
@@ -144,15 +152,34 @@ app.get("/users/:name", function(req, res){
 
 
         }}
-        res.render("partner", {name: req.user.firstname, arr: foundUser});
+
+        const partnerName = req.user.firstname;
+        let partnerEmail = req.user.username;
+        task.find({}, function(req, foundTask){
+
+
+          res.render("partner", {name: partnerName, arr: foundUser, taskList:foundTask, email:partnerEmail});
+        })
+
       });
-      console.log(arr[0]);
+
 
 
     }
     else{
-      res.render("employee", {name:req.user.firstname});
+      const employeeUserId = req.user._id;
+      const employeeEmail = req.user.username;
+      const employeeName = req.user.firstname+" "+req.user.lastname;
+      task.find({employeeAssigned: employeeName}, function(req, foundTask){
+
+        res.render("employee", {name:employeeName, taskList:foundTask, userId: employeeUserId, email:employeeEmail});
+      })
+
+
     }
+  }
+  else{
+    res.redirect("/");
   }
 })
 
@@ -193,6 +220,246 @@ app.get("/clients/:name", function(req,res){
   }
 })
 
+
+
+app.get("/employee-page/:name", function(req, res){
+  if(req.isAuthenticated()){
+
+    if(req.user.privilege==="admin"){
+
+      let employeeId = req.params.name;
+
+      User.find({_id: employeeId}, function(req, foundEmployee){
+        // console.log(foundEmployee);
+        // console.log(foundEmployee[0].firstname);
+        // console.log(foundEmployee[0].lastname);
+
+        let employeeName = foundEmployee[0].firstname+" "+foundEmployee[0].lastname;
+        // console.log(employeeName);
+
+        task.find({employeeAssigned: employeeName}, function(req, foundTask){
+          // console.log(foundTask);
+
+          res.render('employeePage', {employee:foundEmployee[0], taskList:foundTask})
+        })
+      })
+    }
+  }
+})
+
+
+
+app.get("/partner-page/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      let partnerId = req.params.name;
+      User.find({_id: partnerId}, function(req, foundPartner){
+        res.render('partnerPage', {partner:foundPartner[0]})
+      })
+    }
+  }
+})
+
+
+app.get("/assigned-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Assigned"}, function(req, foundAssignedTask){
+        res.render('assignedTaskList', {assignedTask: foundAssignedTask});
+      })
+    }
+  }
+});
+
+
+app.get("/missing-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Missing"}, function(req, foundMissingTask){
+        res.render('missingTaskList', {missingTask: foundMissingTask});
+      })
+    }
+  }
+});
+
+
+app.get("/done-task-list", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      task.find({status: "Done"}, function(req, foundDoneTask){
+        res.render('doneTaskList', {doneTask: foundDoneTask});
+      })
+    }
+  }
+});
+//Get route for task deletion
+app.get("/delete/:name", function(req,res){
+  if(req.isAuthenticated()){
+    let taskId = req.params.name;
+    task.findOneAndRemove({_id:taskId}, function(err,data){
+      if(!err){
+        console.log("Deleted");
+        res.redirect("/");
+      }
+    });
+  }
+});
+
+//Edit employee information
+app.post("/editEmpInfo", function(req, res){
+  // if(req.isAuthenticated()){
+    let empId=req.body.empId;
+    console.log(empId);
+    const toUpdate={
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      aadharNumber: req.body.aadharNumber,
+      contactNumber: req.body.contactNumber,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state
+    }
+
+    User.findOneAndUpdate({_id: empId}, {$set: toUpdate}, function(err, doc){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log(doc);
+        res.render("success");
+      }
+    })
+  // }
+  // else{
+  //   res.redirect("/");
+  // }
+
+});
+
+
+
+
+app.get("/editEmpInfo/:name", function(req,res){
+  if(req.isAuthenticated()){
+    let empId=req.params.name;
+    User.findById(empId, function(err,emp){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log(emp);
+        res.render("edit-userinfo", {emp:emp});
+      }
+    })
+  }
+  else{
+    res.redirect("/");
+  }
+});
+
+
+app.get("/task-details/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="admin"){
+
+      let taskId = req.params.name;
+      task.find({_id: taskId}, function(req, foundTask){
+
+        let partnerId = foundTask[0].partner;
+        User.find({_id: partnerId}, function(req, foundPartner){
+
+          client.find({companyName: foundTask[0].clientName}, function(req, foundClient){
+
+            res.render("taskDetailsPage", {taskDetails: foundTask[0], partnerDetails: foundPartner[0], clientDetails: foundClient[0],});
+          })
+        })
+      })
+    }
+  }
+})
+
+
+
+app.get("/assigned-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+
+      task.find({employeeId: assignedEmployeeId, status: "Assigned"}, function(req, foundTask){
+        res.render("employeeAssignedTasks", {assignedTask: foundTask});
+      })
+    }
+  }
+})
+
+
+app.get("/missing-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+
+      task.find({employeeId: assignedEmployeeId, status: "Missing"}, function(req, foundTask){
+        res.render("employeeMissingTasks", {missingTask: foundTask});
+      })
+    }
+  }
+})
+
+app.get("/tasks/:name", function(req,res){
+  if(req.isAuthenticated()){
+    task.findById(name, function(err,foundTask){
+      if(err){
+        console.log(err);
+      }
+      else{
+
+      }
+    })
+  }
+})
+
+app.get("/done-task/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let assignedEmployeeId = req.params.name;
+
+      task.find({employeeId: assignedEmployeeId, status: "Done"}, function(req, foundTask){
+        res.render("employeeDoneTasks", {doneTask: foundTask});
+      })
+    }
+  }
+})
+
+
+app.get("/employee-task-details/:name", function(req, res){
+  if(req.isAuthenticated()){
+    if(req.user.privilege==="emp"){
+
+      let taskId = req.params.name;
+
+      task.find({_id: taskId}, function(req, foundTask){
+
+        User.find({_id: foundTask[0].partner}, function(req, foundPartner){
+
+          res.render("employeeTaskDetail", {taskDetails: foundTask[0], partnerDetails:foundPartner[0]});
+        })
+      })
+    }
+  }
+})
+
+
+
+
+
+
 //logout route
 app.get("/logout", function(req, res){
   req.logout();
@@ -201,13 +468,31 @@ app.get("/logout", function(req, res){
 
 
 
+//View all associates
+app.get("/view-associates", function(req,res){
+
+  User.find({privilege: "emp"}, function(req, foundEmployee){
+
+    User.find({privilege: "admin"}, function(req, foundPartner){
+
+      res.render("associates", {employee: foundEmployee, partner: foundPartner});
+    })
+  })
+
+})
 
 
 
 //register a new client
 app.get("/register-client", function(req,res){
-  res.render("register-client");
+  if(req.isAuthenticated()){
+    res.render("register-client");
+  }
+  else{
+    res.render("/login");
+  }
 })
+
 
 
 //Login route
@@ -266,26 +551,30 @@ app.post("/login",
 //register task to employees
 app.post("/register-task", function(req,res){
 
-  User.findById(req.body.empId, function(err, foundUser){
+  User.findById(req.body.employeeName, function(err, foundUser){
     emp=foundUser.firstname+" "+foundUser.lastname;
-    console.log(emp);
-    console.log(foundUser);
-  });
-console.log(emp);
-  const addTask = new task({
-    partner: req.user.id,
-    clientName: req.body.clientName,
-    employeeAssigned: emp,
+    // console.log(emp);
+    // console.log(foundUser);
+    // console.log(foundUser._id);
 
-    deadline: req.body.deadline,
-    date: date.getDate(),
-    task: req.body.task,
-    remarks: req.body.remarks,
-    status: "Incomplete"
-  })
-  addTask.save(function(){
-    res.render("success");
+    const addTask = new task({
+      partner: req.user.id,
+      clientName: req.body.clientName,
+      employeeAssigned: emp,
+      employeeId: foundUser._id,
+      deadline: req.body.deadline,
+      date: date.getDate(),
+      task: req.body.task,
+      remarks: req.body.remarks,
+      status: "Assigned"
+    })
+
+    addTask.save(function(){
+      res.render("success");
+    });
+
   });
+// console.log(emp);
 })
 
 app.post("/register-lvl2", function(req,res){
@@ -299,7 +588,14 @@ app.post("/register-lvl2", function(req,res){
       if(foundUser){
         foundUser.firstname = req.body.firstName;
         foundUser.lastname = req.body.lastName;
-        foundUser.privilege=req.body.privilege;
+        foundUser.privilege = req.body.privilege;
+        foundUser.status = "Active";
+        foundUser.contactNumber = req.body.contactNumber;
+        foundUser.aadharNumber = req.body.aadharNumber;
+        foundUser.state = req.body.state;
+        foundUser.city = req.body.city;
+        foundUser.address = req.body.address;
+
         foundUser.save(function(){
           res.render("success");
         })
@@ -350,8 +646,13 @@ app.post("/register-client", function(req,res){
 
 
 app.get("/register-client", function(req, res){
-  
+  if(req.isAuthenticated()){
     res.render("register-client");
+  }
+  else{
+      res.redirect("/login");
+  }
+
 });
 
 

@@ -1,0 +1,27 @@
+<%- include('partials/partnerHeader') %>
+
+
+
+<div class="jumbotron centred partner-home-container">
+  <div class="dashboard-heading"><h1>Partner details</h1></div>
+  <div id="partner-home-header">
+
+
+    <div class="greetings">
+
+      <p style="font-weight: bold; font-size: large; ">Name: <%= partner.firstname %>  <%= partner.lastname %> </p>
+      <p>Email: <%= partner.username %> </p>
+      <p>Status: <%= partner.status %> </p>
+      <p>Contact Number: <%= partner.contactNumber %> </p>
+      <p>Aadhar: <%= partner.aadharNumber %> </p>
+      <p>State: <%= partner.state %> </p>
+      <p>City: <%= partner.city %> </p>
+      <p>Full Address: <%= partner.address %> </p>
+      <a href="/editEmpInfo/<%=partner._id%>"> <p>Edit Information >></p> </a>
+    </div>
+  </div>
+</div>
+
+
+
+<%- include('partials/footer') %>

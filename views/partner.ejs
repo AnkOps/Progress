@@ -2,42 +2,121 @@
 
 
 <div class="jumbotron centred partner-home-container">
-<div class="dashboard"><h1>Partner dashboard</h1></div>
+<div class="dashboard-heading"><h1>Partner dashboard</h1></div>
 <div id="partner-home-header">
 
 
   <div class="greetings">
     <h3>Welcome! Mr. <%=name %> </h3>
-    <p>Hope you're doing well? Have a great day at work..</p>
+    <p><i class="fas fa-user"></i>  User email: <%=email %></p>
     <a href="/register-client"><h5>Register a client >></h5></a>
     <a href="/register"><h5>Register associates >></h5></a>
+
   </div>
 
 
   <div class="dropdown dropdown-container">
-    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Visit Clients
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Visit Clients / Assign Task
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
-  
+
       <% for(var i=0; i<arr.length; i++ ){ %>
           <li>
-  
+
             <a href="/clients/<%= arr[i]._id %>" > <%= arr[i].companyName %> </a>
           </li>
-  
-  
+
+
     <%  } %>
-  
+
     </ul>
   </div>
 
 </div>
+<div id="all-associates-button"><h5> <a href="/view-associates">Associates >></a> </h5></div>
 
-  
+
 
 </div>
 
+
+
+
+
+
+<section id="allTasks">
+  <div id="all-tasks-container">
+    <h1>Task details </h1>
+    <p><a href="/assigned-task-list">View all Tasks >></a></p>
+
+    <hr>
+
+    <div id="table-container"></div>
+    <table>
+      <thead>
+        <tr>
+          <th style="min-width: 20%">Task </th>
+          <th style="min-width: 20%">Employee assigned </th>
+          <th style="min-width: 20%">Client </th>
+          <th style="min-width: 10%">Deadline </th>
+          <th style="min-width: 25%">Status </th>
+          <th style="min-width: 10%">Actions</th>
+        </tr>
+      </thead>
+
+
+      <% for(var i=taskList.length-1;i>=0;i--){ %>
+        <% if(taskList.length-1-i===10){ %>
+        <%  break; %>
+      <%  } %>
+
+        <tbody>
+          <a href="/view-tasks"><div>
+
+            <tr>
+
+            <td><%= taskList[i].task %> </td>
+            <td><%= taskList[i].employeeAssigned %> </td>
+            <td><%= taskList[i].clientName %> </td>
+            <td><%= taskList[i].deadline %> </td>
+            <td><%= taskList[i].status %>  </td>
+            <td>
+              <div class="dropdown dropdown-container">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/tasks/<%= taskList[i]._id %>" > View more </a> </li>
+                      <li>  <a href="/delete/<%= taskList[i]._id %>" > Delete </a>
+                      </li>
+
+
+
+
+                </ul>
+              </div>
+
+
+
+
+
+
+
+            </td>
+          </tr></div></a>
+        </tbody>
+
+
+        <% } %>
+
+
+    </table>
+  </div>
+</section>
+
+<hr>
 <script>
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
@@ -48,15 +127,4 @@ $(document).ready(function(){
   });
 });
 </script>
-
-
-<a href="/register-client"><h2>Register a client</h2></a>
-
-
-
 <%- include('partials/footer') %>
-
-
-
-<%- include('partials/footer') %>
-

@@ -1,0 +1,57 @@
+<%- include('partials/clientHeader') %>
+
+<div class="row client-main-container">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header">
+        <h3>Assign Task:</h3>
+      </div>
+      <div class="card-body">
+        <form method="post" action="/register-task">
+
+          <div class="form-group">
+            <input type="hidden" id="clientName" name="clientName" value="<%= company.companyName %>">
+
+            <label for="employeeName">Employee Name:</label>
+            <select name="employeeName" class="form-control" id="employeeName" required>
+              <option value="">--select employee name--</option>
+              <% for(var i=empList.length-1;i>=0;i--){ %>
+
+
+                <option value=<%=empList[i]._id%>> <%=empList[i].firstname %>
+                    <%= empList[i].lastname %>
+                </option>
+
+                <% } %>
+            </select>
+          </div>
+
+
+          <div class="form-group">
+            <label for="task">Task:</label>
+            <input type="text" class="form-control" name="task" id="task" required placeholder="Enter the task">
+          </div>
+          <div class="form-group">
+            <label for="deadline">Set Deadline:</label>
+            <input type="date" class="form-control" name="deadline" id="deadline" required
+              placeholder="Enter the deadline">
+          </div>
+          <div class="form-group">
+            <label for="remark">Remarks:</label>
+
+            <textarea name="remarks" class="form-control" id="remarks" cols="110" rows="3"
+              placeholder="Enter remarks"></textarea>
+          </div>
+          <div class="form-group">
+            <p>
+              <input class="btn btn-dark" type="reset" value="Reset all">
+              <input class="btn btn-dark" type="submit" value="Assign">
+            </p>
+          </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <%- include('partials/footer') %>
