@@ -11,7 +11,7 @@
     <p><i class="fas fa-user"></i>  User email: <%=email %></p>
     <a href="/register-client"><h5>Register a client >></h5></a>
     <a href="/register"><h5>Register associates >></h5></a>
-    
+
   </div>
 
 
@@ -20,36 +20,27 @@
     <span class="caret"></span></button>
     <ul class="dropdown-menu">
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
-  
+
       <% for(var i=0; i<arr.length; i++ ){ %>
           <li>
-  
+
             <a href="/clients/<%= arr[i]._id %>" > <%= arr[i].companyName %> </a>
           </li>
-  
-  
+
+
     <%  } %>
-  
+
     </ul>
   </div>
 
 </div>
 <div id="all-associates-button"><h5> <a href="/view-associates">Associates >></a> </h5></div>
 
-  
+
 
 </div>
 
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $(".dropdown-menu li").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>
+
 
 
 
@@ -60,7 +51,7 @@ $(document).ready(function(){
     <p><a href="/assigned-task-list">View all Tasks >></a></p>
 
     <hr>
-    
+
     <div id="table-container"></div>
     <table>
       <thead>
@@ -70,21 +61,56 @@ $(document).ready(function(){
           <th style="min-width: 20%">Client </th>
           <th style="min-width: 10%">Deadline </th>
           <th style="min-width: 25%">Status </th>
+          <th style="min-width: 10%">Actions</th>
         </tr>
       </thead>
+
       
       
       <% for(var i=taskList.length-1;i>=0;i--){ %>
       
 
+
+      <% for(var i=taskList.length-1;i>=0;i--){ %>
+        <% if(taskList.length-1-i===10){ %>
+        <%  break; %>
+      <%  } %>
+
         <tbody>
-          <tr>
+          <a href="/view-tasks"><div>
+
+            <tr>
+
             <td><%= taskList[i].task %> </td>
             <td><%= taskList[i].employeeAssigned %> </td>
             <td><%= taskList[i].clientName %> </td>
-            <td><%= taskList[i].deadline %></td>
-            <td><%= taskList[i].status %> </td>
-          </tr>
+            <td><%= taskList[i].deadline %> </td>
+            <td><%= taskList[i].status %>  </td>
+            <td>
+              <div class="dropdown dropdown-container">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+
+                      <li>
+                        <a href="/tasks/<%= taskList[i]._id %>" > View more </a> </li>
+                      <li>  <a href="/delete/<%= taskList[i]._id %>" > Delete </a>
+                      </li>
+
+
+
+
+                </ul>
+              </div>
+
+
+
+
+
+
+
+            </td>
+          </tr></div></a>
         </tbody>
 
 
@@ -96,9 +122,14 @@ $(document).ready(function(){
 </section>
 
 <hr>
-
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $(".dropdown-menu li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
 <%- include('partials/footer') %>
-
-
-
-
