@@ -137,11 +137,6 @@ app.get("/register", function(req, res){
 });
 
 
-// db.clients.find(funtion(err, foundClient){
-//   arr.pushback(foundClient)
-// })
-
-
 //sending clientList as array
 app.get("/users/:name", function(req, res){
   if(req.isAuthenticated()){
@@ -167,7 +162,7 @@ app.get("/users/:name", function(req, res){
         })
 
       });
-      // console.log(arr[0]);
+
 
 
     }
@@ -182,6 +177,9 @@ app.get("/users/:name", function(req, res){
 
 
     }
+  }
+  else{
+    res.redirect("/");
   }
 })
 
@@ -298,7 +296,70 @@ app.get("/done-task-list", function(req, res){
     }
   }
 });
+//Get route for task deletion
+app.get("/delete/:name", function(req,res){
+  if(req.isAuthenticated()){
+    let taskId = req.params.name;
+    task.findOneAndRemove({_id:taskId}, function(err,data){
+      if(!err){
+        console.log("Deleted");
+        res.redirect("/");
+      }
+    });
+  }
+});
 
+//Edit employee information
+app.post("/editEmpInfo", function(req, res){
+  // if(req.isAuthenticated()){
+    let empId=req.body.empId;
+    console.log(empId);
+    const toUpdate={
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      aadharNumber: req.body.aadharNumber,
+      contactNumber: req.body.contactNumber,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state
+    }
+
+    User.findOneAndUpdate({_id: empId}, {$set: toUpdate}, function(err, doc){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log(doc);
+        res.render("success");
+      }
+    })
+  // }
+  // else{
+  //   res.redirect("/");
+  // }
+
+});
+
+
+
+
+app.get("/editEmpInfo/:name", function(req,res){
+  if(req.isAuthenticated()){
+    let empId=req.params.name;
+    User.findById(empId, function(err,emp){
+      if(err){
+        console.log(err);
+      }
+      else{
+        console.log(emp);
+        res.render("edit-userinfo", {emp:emp});
+      }
+    })
+  }
+  else{
+    res.redirect("/");
+  }
+});
 
 
 app.get("/task-details/:name", function(req, res){
@@ -350,6 +411,18 @@ app.get("/missing-task/:name", function(req, res){
   }
 })
 
+app.get("/tasks/:name", function(req,res){
+  if(req.isAuthenticated()){
+    task.findById(name, function(err,foundTask){
+      if(err){
+        console.log(err);
+      }
+      else{
+
+      }
+    })
+  }
+})
 
 app.get("/done-task/:name", function(req, res){
   if(req.isAuthenticated()){
@@ -419,7 +492,6 @@ app.get("/register-client", function(req,res){
     res.render("/login");
   }
 })
-
 
 
 

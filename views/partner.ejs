@@ -67,7 +67,9 @@
 
 
       <% for(var i=taskList.length-1;i>=0;i--){ %>
-
+        <% if(taskList.length-1-i===10){ %>
+        <%  break; %>
+      <%  } %>
 
         <tbody>
           <a href="/view-tasks"><div>
@@ -81,7 +83,7 @@
             <td><%= taskList[i].status %>  </td>
             <td>
               <div class="dropdown dropdown-container">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Actions
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                 <span class="caret"></span></button>
                 <ul class="dropdown-menu">
 
