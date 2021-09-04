@@ -9,6 +9,7 @@ const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const app=express();
 const date=require(__dirname + "/date.js");
+const cron = require('node-cron');
 
 // const encrypt = require("mongoose-encryption");
 
@@ -64,8 +65,8 @@ const taskSchema = new mongoose.Schema({
   clientName: String,
   employeeAssigned: String,
   employeeId: String,
-  deadline: String,
-  date: String,
+  deadline: Date,
+  date: Date,
   task: String,
   remarks: String,
   status: String
@@ -361,6 +362,23 @@ app.get("/editEmpInfo/:name", function(req,res){
   }
 });
 
+app.get("/edit-task/:name", function(req,res){
+
+
+  if(req.isAuthenticated()){
+
+  task.findById(req.params.name, function(err,task){
+    console.log(task);
+    if(err){console.log(err)}
+    else{
+    res.render("edit-task",{task:task});
+  }
+  })
+}
+else{
+  res.redirect("/");
+}
+})
 
 app.get("/task-details/:name", function(req, res){
   if(req.isAuthenticated()){
@@ -411,18 +429,6 @@ app.get("/missing-task/:name", function(req, res){
   }
 })
 
-app.get("/tasks/:name", function(req,res){
-  if(req.isAuthenticated()){
-    task.findById(name, function(err,foundTask){
-      if(err){
-        console.log(err);
-      }
-      else{
-
-      }
-    })
-  }
-})
 
 app.get("/done-task/:name", function(req, res){
   if(req.isAuthenticated()){
@@ -679,8 +685,36 @@ app.post("/register-client", function(req,res){
   res.render("success");
 
 })
+//Cron job to check deadlines
+cron.schedule('*/5 * * * * *', () =>{
 
 
+
+  task.find({}, function(err,result){
+    if(err){
+      console.log(err);
+    }
+    else{
+      for(var i=0; i<result.length;i++){
+        if(result[i].deadline.getTime()< new Date().getTime()){
+
+          task.findOneAndUpdate({_id:result[i]._id}, {status:"Missing"}, function(error,doc){
+            if(err){
+              console.log(error);
+            }
+            else{
+
+            }
+          });
+        }
+        else{
+          continue;
+        }
+      }
+    }
+  });
+  // task.updateMany({status:Assigned}, {$set:toUpdate);
+})
 app.listen(process.env.PORT || 3000, function(){
   console.log("Server running at port 3000");
 })

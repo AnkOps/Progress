@@ -1,57 +1,50 @@
 <%- include('partials/clientHeader') %>
-
 <div class="row client-main-container">
   <div class="col-md-5">
     <div class="card">
       <div class="card-header">
-        <h3>Assign Task:</h3>
+        <h3><%=task.clientName%>:</h3>
       </div>
       <div class="card-body">
-        <form method="post" action="/register-task">
+        <form  action="/editEmpInfo" method="POST">
 
           <div class="form-group">
-            <input type="hidden" id="clientName" name="clientName" value="<%= company.companyName %>">
+            <input type="hidden" id="empId" name="empId" value="<%=task._id%>">
 
-            <label for="employeeName">Employee Name:</label>
-            <select name="employeeName" class="form-control" id="employeeName" required>
-              <option value="">--select employee name--</option>
-              <% for(var i=empList.length-1;i>=0;i--){ %>
+            <label for="employeeName">Task:</label>
+            <input type="text" class="form-control" name="firstname" id="firstname" required value="<%=task.task%>">
 
-
-                <option value=<%=empList[i]._id%>> <%=empList[i].firstname %>
-                    <%= empList[i].lastname %>
-                </option>
-
-                <% } %>
-            </select>
-          </div>
+            <label for="employeeName">Employee Assigned:</label>
+            <input type="text" class="form-control" name="lastname" id="lastname" required value="<%=task.employeeAssigned%>">
 
 
-          <div class="form-group">
-            <label for="task">Task:</label>
-            <input type="text" class="form-control" name="task" id="task" required placeholder="Enter the task">
-          </div>
-          <div class="form-group">
-            <label for="deadline">Set Deadline:</label>
-            <input type="date" class="form-control" name="deadline" id="deadline" required
-              placeholder="Enter the deadline">
-          </div>
-          <div class="form-group">
-            <label for="remark">Remarks:</label>
+            <label for="employeeName">Date of Assign:</label>
+            <input type="text" class="form-control" name="aadharNumber" id="aadharNumber" required value="<%=task.date%>">
 
-            <textarea name="remarks" class="form-control" id="remarks" cols="110" rows="3"
-              placeholder="Enter remarks"></textarea>
-          </div>
-          <div class="form-group">
-            <p>
-              <input class="btn btn-dark" type="reset" value="Reset all">
-              <input class="btn btn-dark" type="submit" value="Assign">
-            </p>
+            <label for="employeeName">Status:</label>
+            <input type="text" class="form-control" name="address" id="address" required value="<%=task.status%>" disabled>
+
+            <label for="employeeName">Deadline:</label>
+            <input type="date" class="form-control" name="city" id="city" required value="<%=task.deadline%>">
+
+            <label for="employeeName">Remarks:</label>
+            <input type="text" class="form-control" name="state" id="state" required value="<%=task.remarks%>">
+
+
+
+            <div class="form-group">
+              <p>
+                <input class="btn btn-dark" type="reset" value="Reset all">
+                <input class="btn btn-dark" type="submit" value="Submit">
+              </p>
+            </div>
+
           </div>
 
 
         </form>
       </div>
     </div>
+  </div>
   </div>
   <%- include('partials/footer') %>

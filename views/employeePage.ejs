@@ -5,8 +5,8 @@
 <div class="jumbotron centred partner-home-container">
   <div class="dashboard-heading"><h1>Employee details</h1></div>
   <div id="partner-home-header">
-  
-  
+
+
     <div class="greetings">
 
       <p style="font-weight: bold; font-size: large; ">Name: <%= employee.firstname %>  <%= employee.lastname %> </p>
@@ -17,7 +17,7 @@
       <p>State: <%= employee.state %> </p>
       <p>City: <%= employee.city %> </p>
       <p>Full Address: <%= employee.address %> </p>
-      <a href="#"> <p>Edit Information >></p> </a>
+      <a href="/editEmpInfo/<%=employee._id%>"> <p>Edit Information >></p> </a>
     </div>
   </div>
 </div>
@@ -27,8 +27,8 @@
   <div id="all-tasks-container">
     <h1>Task details </h1>
     <p><a href="/assigned-task-list">View all Tasks >></a></p>
-    
-    
+
+
     <hr>
 
     <div id="table-container"></div>
@@ -60,11 +60,11 @@
         <% } %>
 
 
-      
+
     </table>
   </div>
 </section>
 
 <hr>
-  
+
 <%- include('partials/footer') %>
