@@ -4,9 +4,9 @@
 
 <div class="task-category-container">
     <ul>
-        <li><a href="/assigned-task/<%=missingTask[0].employeeId %>">Assigned</a></li>
+        <li><a href="/assigned-task/<%=empId %>">Assigned</a></li>
         <li>Missing</li>
-        <li><a href="/done-task/<%=missingTask[0].employeeId %>">Done</a></li>
+        <li><a href="/done-task/<%=empId %>">Done</a></li>
     </ul>
     <hr style="width:75%">
 </div>
@@ -15,10 +15,10 @@
     <div class="all-task-list-container">
 
         <% for(var i=missingTask.length-1; i>=0; i--){%>
-        
+
             <div class="single-task-container">
                 <div class="task-information-container">
-        
+
                     <h4>Task: <a href="/employee-task-details/<%= missingTask[i]._id %>"><%= missingTask[i].task %></a></h4>
                     <p>Client: <%= missingTask[i].clientName %></p>
                     <p>Date of Assign: <%= missingTask[i].date %></p>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <hr>
-        
+
         <% } %>
 
     </div>

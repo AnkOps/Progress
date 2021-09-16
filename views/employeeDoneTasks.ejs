@@ -3,22 +3,26 @@
 <div class="jumbotron centered jumbotron-container">
 
 <div class="task-category-container">
+
     <ul>
-        <li><a href="/assigned-task/<%=doneTask[0].employeeId %>">Assigned</a></li>
-        <li><a href="/missing-task/<%=doneTask[0].employeeId %>">Missing</a></li>
+
+        <li><a href="/assigned-task/<%=empId %>">Assigned</a></li>
+        <li><a href="/missing-task/<%=empId %>">Missing</a></li>
         <li>Done</li>
     </ul>
+  
     <hr style="width:75%">
 </div>
 
 <section class="task-list-section">
     <div class="all-task-list-container">
 
+
         <% for(var i=doneTask.length-1; i>=0; i--){%>
-        
+
             <div class="single-task-container">
                 <div class="task-information-container">
-        
+
                     <h4>Task: <a href="/employee-task-details/<%= doneTask[i]._id %>"><%= doneTask[i].task %></a></h4>
                     <p>Client: <%= doneTask[i].clientName %></p>
                     <p>Date of Assign: <%= doneTask[i].date %></p>
@@ -30,8 +34,10 @@
                 </div>
             </div>
             <hr>
-        
+
         <% } %>
+
+
 
     </div>
 

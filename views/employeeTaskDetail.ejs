@@ -5,48 +5,48 @@
 <div class="jumbotron centred partner-home-container">
   <div class="dashboard-heading"><h1>Task details</h1></div>
   <div id="partner-home-header">
-  
-  
+
+
     <div class="greetings task-details-container">
 
       <p style="font-weight: bold; font-size: larger; ">Task: <%= taskDetails.task %> </p>
       <p> >> Client: <%= taskDetails.clientName %></p>
       <!-- <p>Employee Assigned: <%= taskDetails.employeeAssigned %></p> -->
-      
+
       <p> >> Assigned by:  <%= partnerDetails.firstname%>  <%= partnerDetails.lastname%>  </p>
       <p> >> Date of Assign:- <%= taskDetails.date %> </p>
-      <p> >> Status: 
-          
-        <% if( taskDetails.status === "Assigned"){ %> <span style="color: rgb(2, 211, 2);"><%= taskDetails.status %></span> <% } %>  
-        
-        <% if( taskDetails.status === "Missing"){ %> <span style="color: rgb(253, 0, 0);"><%= taskDetails.status %></span> <% } %>  
-        
+      <p> >> Status:
+
+        <% if( taskDetails.status === "Assigned"){ %> <span style="color: rgb(2, 211, 2);"><%= taskDetails.status %></span> <% } %>
+
+        <% if( taskDetails.status === "Missing"){ %> <span style="color: rgb(253, 0, 0);"><%= taskDetails.status %></span> <% } %>
+
         <% if( taskDetails.status === "Done"){ %> <span style="font-weight: bold;"><%= taskDetails.status %></span> <% } %> </p>
 
       <p> >> Deadline:- <%= taskDetails.deadline %> </p>
       <p> >> Remarks: <%= taskDetails.remarks %> </p>
-      
-      
+      <p> >> Comments: <%= taskDetails.comments[0] %></p>
+
     </div>
   </div>
 
 
   <div class="task-details-card-container">
-    
+
       <div class="col-md-4 task-details-card">
         <div class="card">
           <div class="card-header">
             <h1 class="h3 mb-3 font-weight-bold">Attach File</h1>
           </div>
           <div class="card-body">
-            
+
             <div class="form-group">
               <input  id="formFileLg" type="file" />
             </div>
-  
+
             <div class="card-footer"><button type="button" class="btn btn-dark btn-block btn-outline-dark">Mark as done</button>
             </div>
-  
+
           </div>
         </div>
       </div>
@@ -58,23 +58,49 @@
             <h1 class="h3 mb-3 font-weight-bold"><i class="fas fa-user"></i> Private Comments</h1>
           </div>
           <div class="card-body">
-            
+              <form method="post" action="/post-comment">
+                <input type = "hidden" name="authorId" value=<%=taskDetails.employeeId %> />
+                <input type = "hidden" name="taskId" value=<%=taskDetails._id%> />
             <div class="form-group">
               <input type="text" class="form-control" name="privateComments" id="privateComments" required placeholder="Add private comments...">
             </div>
-  
-            <div class="card-footer"><button type="button" class="btn btn-dark btn-block btn-outline-dark">Post comment</button>
+
+            <div class="card-footer"><input class="btn btn-dark" type="submit" value="Post">
             </div>
-  
+              </form>
           </div>
         </div>
       </div>
-    
+
+
+      <div class="col-md-4 task-details-card">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="h3 mb-3 font-weight-bold"><i class="fas fa-user"></i> PROgress</h1>
+          </div>
+          <div class="card-body">
+
+            <div class="form-group">
+              <select class="task-status" name="">
+                <option value="assigned">Assigned</option>
+                <option value="in-progress">In-progress</option>
+                <option value="review">Review</option>
+                <option value="done">Done</option>
+              </select>
+            </div>
+
+            <div class="card-footer"><button type="button" class="btn btn-dark btn-block btn-outline-dark">Post Status</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
   </div>
 
 
 </div>
 
 
-  
+
 <%- include('partials/footer') %>

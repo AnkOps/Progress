@@ -13,13 +13,6 @@ const cron = require('node-cron');
 
 // const encrypt = require("mongoose-encryption");
 
-var arr=[];
-
-
-
-
-
-
 
 var arr=[];
 
@@ -69,7 +62,16 @@ const taskSchema = new mongoose.Schema({
   date: Date,
   task: String,
   remarks: String,
-  status: String
+  status: String,
+  progress: String,
+  comments: [
+    {
+      time: Date,
+      authorId: String,
+      message: String
+    }
+  ]
+
 });
 
 const task = new mongoose.model("task", taskSchema);
@@ -310,6 +312,65 @@ app.get("/delete/:name", function(req,res){
   }
 });
 
+//post route for emp and partner comment
+app.post("/post-comment", function(req,res){
+  let date =  new Date();
+  let msg = req.body.privateComments;
+  let author = req.body.authorId;
+  let taskId=req.body.taskID;
+
+  let pushObject ={
+    time: date,
+    authorId: author,
+    message: msg
+  }
+  // Task.comments.push(pushObject);
+  // Task.save(done);
+  console.log(pushObject);
+  // task.update({_id: taskId}, {$push: {time:date, authorID: author, message:msg}}
+  //
+  // );
+
+  // const taskSchema = new mongoose.Schema({
+  //   partner: String,
+  //   clientName: String,
+  //   employeeAssigned: String,
+  //   employeeId: String,
+  //   deadline: Date,
+  //   date: Date,
+  //   task: String,
+  //   remarks: String,
+  //   status: String,
+  //   progress: String,
+  //   comments: [
+  //     {
+  //       time: Date,
+  //       authorId: String,
+  //       message: String
+  //     }
+  //   ]
+  //
+  // });
+  //
+task.findOneAndUpdate(
+   { _id: taskId },
+   { $push: { comments: {time:date, authorID: author, message:msg} }},
+  function (error, success) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log(success);
+            res.render("success");
+        }
+    });
+
+
+
+})
+
+
+
+
 //Edit employee information
 app.post("/editEmpInfo", function(req, res){
   // if(req.isAuthenticated()){
@@ -408,8 +469,14 @@ app.get("/assigned-task/:name", function(req, res){
 
       let assignedEmployeeId = req.params.name;
 
-      task.find({employeeId: assignedEmployeeId, status: "Assigned"}, function(req, foundTask){
-        res.render("employeeAssignedTasks", {assignedTask: foundTask});
+      task.find({employeeId: assignedEmployeeId, status: "Assigned"}, function(err, foundTask){
+        if(err){
+          let foundTask=[];
+          res.render("employeeAssignedTasks", {assignedTask: foundTask, empId: assignedEmployeeId});
+        }
+        else{
+          res.render("employeeAssignedTasks", {assignedTask: foundTask, empId: assignedEmployeeId});
+        }
       })
     }
   }
@@ -422,8 +489,13 @@ app.get("/missing-task/:name", function(req, res){
 
       let assignedEmployeeId = req.params.name;
 
-      task.find({employeeId: assignedEmployeeId, status: "Missing"}, function(req, foundTask){
-        res.render("employeeMissingTasks", {missingTask: foundTask});
+      task.find({employeeId: assignedEmployeeId, status: "Missing"}, function(err, foundTask){
+        if(err){
+          let foundTask=[];
+          res.render("employeeMissingTasks", {missingTask: foundTask, empId: assignedEmployeeId} );
+        }else{
+          res.render("employeeMissingTasks", {missingTask: foundTask, empId: assignedEmployeeId});
+        }
       })
     }
   }
@@ -436,8 +508,13 @@ app.get("/done-task/:name", function(req, res){
 
       let assignedEmployeeId = req.params.name;
 
-      task.find({employeeId: assignedEmployeeId, status: "Done"}, function(req, foundTask){
-        res.render("employeeDoneTasks", {doneTask: foundTask});
+      task.find({employeeId: assignedEmployeeId, status: "Done"}, function(err, foundTask){
+        if(err){
+          let foundTask=[];
+          res.render("employeeDoneTasks", {doneTask: foundTask, empId: assignedEmployeeId});
+        }else{
+          res.render("employeeDoneTasks", {doneTask: foundTask, empId: assignedEmployeeId});
+        }
       })
     }
   }
